@@ -1,12 +1,16 @@
 Package: WSPMetrics
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Functions for the WSP Metrics Package
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Gottfried Pestal, Carrie Holt
+Maintainer: The package maintainer <carrie.holt@dfo-mpo.gc.ca>
+Description: This package includes functions for calculating WSP status metrics.
+License: GNU General Public Licence
 Encoding: UTF-8
 LazyData: true
+Imports: tidyverse, rjags
+SystemRequirements: 
+Suggestions:
+VignetteBuilder: knitr
+URL: https://github.com/SOLV-Code/SPATFunctions-Package
 RoxygenNote: 7.0.2
