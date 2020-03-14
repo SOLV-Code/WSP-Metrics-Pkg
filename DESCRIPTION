@@ -8,7 +8,7 @@ Description: This package includes functions for calculating WSP status metrics.
 License: GNU General Public Licence
 Encoding: UTF-8
 LazyData: true
-Imports: tidyverse, R2jags
+Imports: tidyverse, R2jags, coda
 SystemRequirements: 
 Suggestions:
 VignetteBuilder: knitr

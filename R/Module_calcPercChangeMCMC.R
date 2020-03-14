@@ -98,7 +98,7 @@ if(is.null(model.in)){model.in <- trend.bugs.1}
 	if(mcmc.plots){
 	
 		plot(fit_mcmc)
-		traceplot(fit_mcmc,ask=FALSE)
+		R2jags::traceplot(fit_mcmc,ask=FALSE)
 		plot(coda.obj1)
 		gelman.plot(coda.obj2)
 		crosscorr.plot(coda.obj1,main="crosscorr.plot")

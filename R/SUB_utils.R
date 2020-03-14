@@ -4,6 +4,7 @@ include.dependencies <- function(){
 #' @description Seems like this is needed in addition to the import list in the DESCRIPTION file, so keeping them all together in one place.
 #' @import tidyverse
 #' @import R2jags
+#' @import coda
 #' @export
 
 
