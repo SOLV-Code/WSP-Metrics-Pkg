@@ -21,7 +21,7 @@ install_github("carrieholt/WSP-Metrics-Pkg", dependencies = TRUE, build_vignette
 library(WSPMetrics)				
 ```
 
-**Note: If you want to use the MCMC-based functions, you also need to instal [JAGS](http://mcmc-jags.sourceforge.net/).**
+**Note: If you want to use the MCMC-based functions, you also need to install [JAGS](http://mcmc-jags.sourceforge.net/).**
 
 ### WSP Status Metrics
 
