@@ -1,5 +1,5 @@
 library(tidyverse)
-library(MetricsTest)
+library(WSPMetrics)
 library(R2jags)
 
 
@@ -58,4 +58,38 @@ names(slope.mcmc.fit)
 slope.mcmc.fit$pchange
 slope.mcmc.fit$probdecl
 slope.mcmc.fit$summary
+
+
+
+
+
+
+
+###########
+?calcLongTermTrendSimple
+
+
+#################
+# Testing Manual Generation
+
+
+library(devtools)
+
+setwd("../") # have to be outside the package folder
+
+build_manual(pkg = "WSP-Metrics-Pkg") # takes a while (first time only? installs some stuff)
+
+setwd("WSP-Metrics-Pkg") # move back into pkg folder
+
+
+
+
+
+
+
+
+
+
+
+
 
