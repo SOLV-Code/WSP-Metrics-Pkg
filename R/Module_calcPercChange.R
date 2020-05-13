@@ -1,6 +1,6 @@
 #' calcPercChange
 #'
-#' this function applies a basic deterministic % change calculation to a data frame of Year x Stock,
+#' this function applies a basic deterministic % change calculation to a data frame of Year x Stock iteratively for each year, using only the data prior to that year,
 #' with various user options (e.g. log transform, gen avg smoothing, time window to use).
 #' For a single vector, use  calcPercChangeSimple()
 #' @param X a data frame with Years x Stocks. Row labels are years, no missing years allowed, NA are possible, but will result in NA for
