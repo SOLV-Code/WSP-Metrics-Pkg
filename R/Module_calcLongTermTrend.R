@@ -1,6 +1,6 @@
 #' calcLongTermTrend
 #'
-#' this function applies a basic long-term trend to a data frame of Year x Stock,
+#' this function applies a basic long-term trend to a data frame of Year x Stock, iteratively for each year using only data prior to that year,
 #' with various user options (e.g. log transform, gen avg smoothing, time window to use).
 #' For a single vector, use calcLongTermTrendSimple()
 #' @param X a data frame with Years x Stocks. Row labels are years, no missing years allowed, NA are possible, but will result in NA Trend for
