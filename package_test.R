@@ -1,6 +1,6 @@
 library(tidyverse)
 library(WSPMetrics)
-library(R2jags)
+#library(R2jags)
 
 
 #ls(getNamespace("MetricsTest"), all.names=TRUE)
