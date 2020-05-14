@@ -29,7 +29,7 @@ sample.df <- data.frame(Stock1 = sample(100,40),Stock2 = sample(2000,40),Stock3 
 sample.df[29,3] <- NA
 
 lt.trend <- calcLongTermTrend(X = sample.df,gen.in = 4, recent.num.gen = 1, extra.yrs = 0,
-                               min.lt.yrs = 20, avg.type = "geomean", tracing=FALSE,
+                               min.yrs.used = 20, avg.type = "geomean", tracing=FALSE,
                                recent.excl = FALSE)
 
 lt.trend
