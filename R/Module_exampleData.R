@@ -7,13 +7,11 @@
 #'
 #' @usage data(ExampleData)
 #'
+#' @format A data frame with columns "Stock1", "Stock2" and "Stock3"
 #'
-#' @keywords datasets
+#' @keywords dataset
 #'
 #'
 #' @examples
-#' data(grav)
-#' times <- attr(grav, "time")
-#' phe <- grav$pheno
-#' \donttest{iplotCurves(phe, times)}
+#' data(ExampleData)
 "ExampleData"
