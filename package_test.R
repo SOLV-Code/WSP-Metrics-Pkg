@@ -15,19 +15,14 @@ lt.trend.single <- calcLongTermTrendSimple(vec.in = exampleData$Stock1 ,
 
 lt.trend.single
 
-# need to address handling of large numbers
 calcPercChangeSimple(vec.in = exampleData$Stock1)
-calcPercChangeSimple(vec.in = exampleData$Stock1*100)
 calcPercChangeSimple(vec.in = exampleData$Stock2)
-calcPercChangeSimple(vec.in = exampleData$Stock2/100)
+calcPercChangeSimple(vec.in = exampleData$Stock3) #Returns NA because NA in time-series
 
 
 
 # TEST LONG-TERM TREND AND PERC CHANGE - data frame version
 
-
-sample.df <- data.frame(Stock1 = sample(100,40),Stock2 = sample(2000,40),Stock3 = sample(500,40))
-sample.df[29,3] <- NA
 
 lt.trend <- calcLongTermTrend(X = exampleData,gen.in = 4, recent.num.gen = 1, extra.yrs = 0,
                                min.yrs.used = 20, avg.type = "geomean", tracing=FALSE,
@@ -50,7 +45,7 @@ perc.change
 pdf("ProbDecl_Fits.pdf",onefile=TRUE,height=8.5, width=11)
 
 vec.use = c(12,10,14,7,13,5,8,3,4,7,6,5)
-slope.mcmc.fit <- calcPercChangeMCMC(vec.in= vec.use,model.in = NULL ,
+slope.mcmc.fit <- calcPercChangeMCMC(vec.in= exampleData$Stock1,model.in = NULL ,
                                      perc.change.bm = -25 , na.skip=FALSE,
                                      out.type = "long", mcmc.plots = TRUE)
 dev.off()
