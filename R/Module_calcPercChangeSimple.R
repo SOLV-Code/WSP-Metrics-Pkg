@@ -1,7 +1,8 @@
 #' calcPercChangeSimple
 #'
 #' this function just does a basic percent change calculation on a single vector over the entire time period.
-#' calcPercChange() applies the same basic calc to a data frame of Year x Stock iteratively each year, using only data prior to that year,
+#' calcPercChange() applies the same basic calc but over shorter time periods and to a data frame of Year x Stock
+#' iteratively each year, using only data prior to that year
 #' Note: for now this simply replicates the internal function per.change.mod.fast
 #' @param vec.in  a vector of values. NA are possible, but will result in NA trend (no infill for now)
 #' @export
