@@ -14,4 +14,3 @@ Suggestions:
 VignetteBuilder: knitr
 URL: https://github.com/SOLV-Code/SPATFunctions-Package
 RoxygenNote: 7.0.2
-LazyData: true
