@@ -13,6 +13,7 @@ calcPercChangeSimple  <- function(vec.in){
   na.rm <- TRUE
   if(na.rm){vec.use <- na.omit(vec.in)} # NEED TO DISCUSS THIS
   if(!na.rm){vec.use <- vec.in}
+  vec.use <- log(vec.use)
 
 
   if(sum(is.na(vec.use)) == 0 ){
