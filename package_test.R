@@ -17,7 +17,7 @@ lt.trend.single
 
 calcPercChangeSimple(vec.in = exampleData$Stock1)
 calcPercChangeSimple(vec.in = exampleData$Stock2)
-calcPercChangeSimple(vec.in = exampleData$Stock3) #Returns NA because NA in time-series
+calcPercChangeSimple(vec.in = exampleData$Stock3)
 
 
 
