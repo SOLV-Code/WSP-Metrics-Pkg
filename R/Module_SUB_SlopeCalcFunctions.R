@@ -45,6 +45,7 @@ per.change.mod<-function(vec.in,na.rm=TRUE){
 per.change.mod.fast<-function(vec.in,na.rm=TRUE){
 	#print("starting per.change")
 	if(na.rm){vec.in <- na.omit(vec.in)} # NEED TO DISCUSS THIS
+  vec.in <- log(vec.in)
 
 	# if no NA  (left) in input
 	#if(sum(is.na(vec.in)) == 0 ){

@@ -18,8 +18,9 @@ calcPercChangeSimple  <- function(vec.in){
 
 
   #if(sum(is.na(vec.use)) == 0 ){
-    n<-length(vec.use)
-    yrs <- 1:n
+    #n<-length(vec.use)
+    yrs <- which(!is.na(vec.in))#1:n
+    n <- length(yrs)
     lm.coeff <- .lm.fit(cbind(1,yrs),vec.use)$coefficients # uses model matrix that is usually created inside lm()
     #lm.coeff <- lm(vec.use~yrs, na.action=na.exclude)$coef # calculates coefficients excluding those values
     #print(lm.coeff)
