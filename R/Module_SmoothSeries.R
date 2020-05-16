@@ -17,7 +17,7 @@ smoothSeries <- function(vec.in, gen , filter.sides=2, log.transform = TRUE, out
 if(sum(vec.in < 0,na.rm=TRUE)>0){warning("Function smoothSeries() does not accept negative values");stop()}
 
 # log transform
-if(log.transform){ vec.use <- log1p(vec.in) }
+if(log.transform){ vec.use <- log(vec.in) } #log1p(vec.in) }
 if(!log.transform){ vec.use <- vec.in }
 
 
@@ -25,7 +25,7 @@ if(!log.transform){ vec.use <- vec.in }
 vec.out <- as.vector(stats::filter(vec.use, filter=rep(1/gen,gen),sides=filter.sides))
 
 # default is to convert back from log space (but for slope calcs want to keep in log space)
-if(log.transform & out.exp){vec.out <- expm1(vec.out)}
+if(log.transform & out.exp){vec.out <- exp(vec.out) } #expm1(vec.out)}
 
 return(vec.out)
 
