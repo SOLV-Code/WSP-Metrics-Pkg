@@ -44,14 +44,16 @@ per.change.mod<-function(vec.in,na.rm=TRUE){
 
 per.change.mod.fast<-function(vec.in,na.rm=TRUE){
 	#print("starting per.change")
-	if(na.rm){vec.in <- na.omit(vec.in)} # NEED TO DISCUSS THIS
-  vec.in <- log(vec.in)
+	if(na.rm){vec.use <- na.omit(vec.in)} # NEED TO DISCUSS THIS
+  vec.use <- log(vec.use)
 
 	# if no NA  (left) in input
 	#if(sum(is.na(vec.in)) == 0 ){
 	n<-length(vec.in)
-	yrs <- 1:n
-	lm.coeff <- .lm.fit(cbind(1,yrs),vec.in)$coefficients # uses model matrix that is usually created inside lm()
+	#yrs <- 1:n
+  yrs <- which(!is.na(vec.in))  #1:n
+
+	lm.coeff <- .lm.fit(cbind(1,yrs),vec.use)$coefficients # uses model matrix that is usually created inside lm()
 	#print(lm.coeff)
 	pchange <- (exp(lm.coeff[1]+lm.coeff[2]*n) -  exp(lm.coeff[1]+lm.coeff[2])) / exp(lm.coeff[1]+lm.coeff[2]) *100
 	#print(pchange)
