@@ -45,9 +45,9 @@ if(is.null(model.in)){model.in <- trend.bugs.1}
 				Abd = vec.in,
 				N = length(yrs.in),
 				p_intercept = median(vec.in,na.rm=TRUE),
-				tau_intercept = (1/ max(vec.in,na.rm=TRUE))^2 ,
+				tau_intercept = 1/ (max(vec.in,na.rm=TRUE))^2 ,
 				p_slope = 0,
-				tau_slope =  (1 / ( max(vec.in,na.rm=TRUE)/ max(yrs.in) ))^2
+				tau_slope =  1 / ( max(vec.in,na.rm=TRUE)/ max(yrs.in) )^2
 			 )
 
 	#print(data.in)
