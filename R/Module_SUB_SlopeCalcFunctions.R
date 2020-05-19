@@ -45,6 +45,8 @@ per.change.mod<-function(vec.in,na.rm=TRUE){
 per.change.mod.fast<-function(vec.in,na.rm=TRUE){
 	#print("starting per.change")
 	if(na.rm){vec.use <- na.omit(vec.in)} # NEED TO DISCUSS THIS
+  if(!na.rm){vec.use <- vec.in} # NEED TO DISCUSS THIS
+
   vec.use <- log(vec.use)
 
 	# if no NA  (left) in input
