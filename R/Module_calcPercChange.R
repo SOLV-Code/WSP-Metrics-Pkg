@@ -1,9 +1,9 @@
 #' calcPercChange
 #'
-#' this function applies a basic deterministic % change calculation to a data frame of Year x Stock iteratively for each year,
-#' for a specified number of generations using only the data prior to that year, with various user options
-#' (e.g. log transform, gen avg smoothing, time window to use).
-#' For a single vector over the entire time period, use  calcPercChangeSimple()
+#' This function applies the calculation of percent change in abundance over time to a data frame (Year x Stock) iteratively for each year
+#' of the time-series using only the data prior to that year.
+#' It calculate declines over a specified number of generation and uses an exponential model to estimate decline rate, as per IUCN guidelines.
+#' For a single vector use  calcPercChangeSimple() to calculate percent declines over the entire time period.
 #' @param X a data frame with Years x Stocks. Row labels are years, no missing years allowed, NA are possible, but will result in NA for
 # any recent time window that includes one or more NA (for now: discuss infill options for future extensions, as in Ck implementation)
 #' @param gen.in = average generation time

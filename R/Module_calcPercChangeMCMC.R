@@ -1,6 +1,7 @@
 #' calcPercChangeMCMC
 #'
 #' MCMC version of trend metric calculation (replaces old version based on PBSModelling and Metropolis algorithm)
+#' This function calculates the percent change in abundances based on an exponential model of population decline, as per IUCN guidelines
 #' @param vec.in vector with numeric values
 #' @param model.in if NULL, use the BUGS code in the built in function trend.bugs.1()
 #' @param perc.change.bm  benchmark for Prob(Decl>BM), default = -25
