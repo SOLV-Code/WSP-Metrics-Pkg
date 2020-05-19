@@ -37,7 +37,7 @@ if(is.null(model.in)){model.in <- trend.bugs.1}
 	if(!na.flag){
 
 
-
+  vec.in <- log(vec.in)
 	yrs.in <- 0:(length(vec.in)-1)
 
 	# for details on priors, see https://github.com/SOLV-Code/WSP-Metrics-Code/issues/36
@@ -78,9 +78,9 @@ if(is.null(model.in)){model.in <- trend.bugs.1}
 
 		# add in % change
 		mcmc.samples <- cbind(mcmc.samples,Perc_Change = NA)
-		neg.start.idx <- mcmc.samples[,"Fit_Start"] < 0
-		mcmc.samples[,"Perc_Change"][!neg.start.idx] <- (mcmc.samples[,"Fit_End"][!neg.start.idx] - mcmc.samples[,"Fit_Start"][!neg.start.idx]) /  mcmc.samples[,"Fit_Start"][!neg.start.idx] * 100
-		mcmc.samples[,"Perc_Change"][neg.start.idx] <- (mcmc.samples[,"Fit_End"][neg.start.idx] + mcmc.samples[,"Fit_Start"][neg.start.idx]) /  abs(mcmc.samples[,"Fit_Start"][neg.start.idx]) * 100
+		neg.start.idx <- mcmc.samples[,"Fit_Start"] < 0 #Not needed if performed on logged values
+		mcmc.samples[,"Perc_Change"][!neg.start.idx] <- (exp(mcmc.samples[,"Fit_End"][!neg.start.idx]) - exp(mcmc.samples[,"Fit_Start"][!neg.start.idx])) /  exp(mcmc.samples[,"Fit_Start"][!neg.start.idx]) * 100
+		mcmc.samples[,"Perc_Change"][neg.start.idx] <- (exp(mcmc.samples[,"Fit_End"][neg.start.idx]) + exp(mcmc.samples[,"Fit_Start"][neg.start.idx])) /  abs(exp(mcmc.samples[,"Fit_Start"][neg.start.idx])) * 100
 		# should do the same for summary table
 
 		#print(head(mcmc.samples))
