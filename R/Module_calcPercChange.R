@@ -4,8 +4,7 @@
 #' of the time-series using only the data prior to that year.
 #' It calculate declines over a specified number of generation and uses an exponential model to estimate decline rate, as per IUCN guidelines.
 #' For a single vector use  calcPercChangeSimple() to calculate percent declines over the entire time period.
-#' @param X a data frame with Years x Stocks. Row labels are years, no missing years allowed, NA are possible, but will result in NA for
-# any recent time window that includes one or more NA (for now: discuss infill options for future extensions, as in Ck implementation)
+#' @param X a data frame of raw values with dimensions Years x Stocks. Row labels are years. NAs values are allowed.
 #' @param gen.in = average generation time
 #' @param slope.num.gen number of generations over which to calculate the perc change
 #' @param extra.yrs to handle COSEWIC "extra year". default is 0

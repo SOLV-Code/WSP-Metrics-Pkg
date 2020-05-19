@@ -3,7 +3,7 @@
 #' This function calculates the percent change on a single vector over the entire time period based on an exponential model of declines
 #' The function calcPercChange() applies the same basic calculation but over shorter time periods and to a data frame of Year x Stock iteratively each year, using only data prior to that year
 #' Note: for now this simply replicates the internal function per.change.mod.fast
-#' @param vec.in  a vector of values. NA are possible, but will result in NA trend (no infill for now)
+#' @param vec.in  a vector of raw values. NAs are possible.
 #' @export
 #' @examples
 #' calcPercChangeSimple(vec.in = as.vector(Nile))
