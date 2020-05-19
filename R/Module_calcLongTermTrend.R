@@ -61,8 +61,8 @@ if(tolower(avg.type) == "mean"){
 	}
 
 if(tolower(avg.type) == "geomean"){
-	recent.avg <- expm1(colMeans(log1p(recent.mat), na.rm=FALSE))
-	longterm.avg <- expm1(colMeans(log1p(longterm.mat), na.rm=TRUE))
+	recent.avg <- exp(colMeans(log(recent.mat), na.rm=FALSE))
+	longterm.avg <- exp(colMeans(log(longterm.mat), na.rm=TRUE))
 	}
 
 if(tolower(avg.type) == "median"){
