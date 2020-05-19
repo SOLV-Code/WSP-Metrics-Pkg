@@ -6,7 +6,7 @@ library(R2jags)
 #ls(getNamespace("MetricsTest"), all.names=TRUE)
 
 
-# TEST LONG-TERM TREND  AND PERC CHANGE - Simple versions for single vector from example Data
+# TEST LONG-TERM TREND  AND PERC CHANGE - Simple versions for single vector from example Data. Perc change calculated over entire time period.
 
 lt.trend.single <- calcLongTermTrendSimple(vec.in = exampleData$Stock1 ,
             gen.in = 4,min.lt.yrs = 20, avg.type = "geomean",
@@ -21,7 +21,7 @@ calcPercChangeSimple(vec.in = exampleData$Stock3)
 
 
 
-# TEST LONG-TERM TREND AND PERC CHANGE - data frame version
+# TEST LONG-TERM TREND AND PERC CHANGE - data frame version. Perc change calculated over 3 generations
 
 
 lt.trend <- calcLongTermTrend(X = exampleData,gen.in = 4, recent.num.gen = 1, extra.yrs = 0,
