@@ -10,10 +10,9 @@
 #' @keywords trend
 #' @export
 #' @examples
-#' calcLongTermTrendSimple(vec.in = as.vector(Nile) ,
-#' gen.in = 4,min.lt.yrs = 20, avg.type = "geomean",
-#' tracing=FALSE,
-#' recent.excl = FALSE)
+#' calcLongTermTrendSimple(vec.in = exampleData$Stock1, gen.in = 4,min.lt.yrs = 20,
+#' avg.type = "geomean", tracing=FALSE,recent.excl = FALSE)
+
 
 calcLongTermTrendSimple  <- function(vec.in,gen.in = 4,min.lt.yrs = 20, avg.type = "geomean", tracing=FALSE,
 							recent.excl = FALSE){
