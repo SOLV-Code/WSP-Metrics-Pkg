@@ -1,15 +1,15 @@
 #' calcPercChangeMCMC
 #'
 #' MCMC version of trend metric calculation (replaces old version based on PBSModelling and Metropolis algorithm)
-#' @param vec.in vector with numeric values  
+#' @param vec.in vector with numeric values
 #' @param model.in if NULL, use the BUGS code in the built in function trend.bugs.1()
 #' @param perc.change.bm  benchmark for Prob(Decl>BM), default = -25
 #' @param na.skip  if TRUE, skip the calculations when vec.in contains any NA
-#' @param out.type  "short" or "long". 
+#' @param out.type  "short" or "long".
 #'    "short" gives summary table of posterior plus "PercChange" and "ProbDecl"
 #'    "long" also includes the full mcmc samples and the jags output object
-#' @param mcmc.plots if true, create the standard series of MCMC diagnostic plots 
-#'    Note that these are printed to the default device 
+#' @param mcmc.plots if true, create the standard series of MCMC diagnostic plots
+#'    Note that these are printed to the default device
 #'    (i.e. need to external wrap the function call inside a pdf /dev.off call)
 #'    To get a plot of the model fit, run this function with out.type = "long",
 #'    and then use plot.trend.fit().
@@ -17,7 +17,7 @@
 #' @keywords MCMC, slope, trend
 #' @export
 
-calcPercChangeMCMC <-function(vec.in,model.in = NULL , perc.change.bm = -25 , na.skip = FALSE, 
+calcPercChangeMCMC <-function(vec.in,model.in = NULL , perc.change.bm = -25 , na.skip = FALSE,
 							out.type = "short",
 							mcmc.plots = FALSE,
 							convergence.check = FALSE
@@ -36,7 +36,7 @@ if(is.null(model.in)){model.in <- trend.bugs.1}
 	# if no NA  (left) in input
 	if(!na.flag){
 
-	
+
 
 	yrs.in <- 0:(length(vec.in)-1)
 
@@ -44,30 +44,30 @@ if(is.null(model.in)){model.in <- trend.bugs.1}
 	data.in  <- list(Yr = yrs.in ,
 				Abd = vec.in,
 				N = length(yrs.in),
-				p_intercept = median(vec.in,na.rm=TRUE), 
-				tau_intercept = (1/ max(vec.in,na.rm=TRUE))^2 , 
-				p_slope = 0, 
+				p_intercept = median(vec.in,na.rm=TRUE),
+				tau_intercept = (1/ max(vec.in,na.rm=TRUE))^2 ,
+				p_slope = 0,
 				tau_slope =  (1 / ( max(vec.in,na.rm=TRUE)/ max(yrs.in) ))^2
 			 )
 
 	#print(data.in)
 
 		# seems to work fine with auto-generated  inits, so don't bother with specific values or function
-		init.values <- NULL  
-		
+		init.values <- NULL
+
 		# Alt option
 		# do a simple linear regression to get INITS for slope and intercept
 		# 	det.fit <- lm(test.data$Abd ~ test.data$Yr )
-		# init.values <- 
+		# init.values <-
 		#   test.det.fit$coefficients[1] (intercept)
 		#   test.det.fit$coefficients[2]  (slope)
-		# need 1 list element per chain! each element needs slope, intercept and tau inits 
-		
-		
+		# need 1 list element per chain! each element needs slope, intercept and tau inits
+
+
 
 		params <- c("intercept", "slope", "sigma", "Fit_Start", "Fit_End")
 
-		fit_mcmc <- jags(data = data.in , inits = init.values, 
+		fit_mcmc <- jags(data = data.in , inits = init.values,
 					parameters.to.save = params, model.file = model.in,
 					n.chains = 3, n.iter = 12000, n.burnin = 2000, n.thin = 10, DIC = F)
 
@@ -89,14 +89,14 @@ if(is.null(model.in)){model.in <- trend.bugs.1}
 		pchange <- median(mcmc.samples[,"Perc_Change"])
 		probdecl <- sum(mcmc.samples[,"Perc_Change"] <= perc.change.bm) / dim(mcmc.samples)[1] *100
 
-		coda.obj1 <- as.mcmc(fit_mcmc$BUGSoutput$sims.matrix) 
+		coda.obj1 <- as.mcmc(fit_mcmc$BUGSoutput$sims.matrix)
 		coda.obj2 <- as.mcmc(fit_mcmc) # need this alt version for the gelman plot (this one is by chain)
 
 
-							
-		
+
+
 	if(mcmc.plots){
-	
+
 		plot(fit_mcmc)
 		R2jags::traceplot(fit_mcmc,ask=FALSE)
 		plot(coda.obj1)
@@ -105,16 +105,16 @@ if(is.null(model.in)){model.in <- trend.bugs.1}
 		cumuplot(coda.obj1)
 		densplot(coda.obj1)
 		geweke.plot(coda.obj1)
-	
+
 		}
 
  if(!convergence.check){conv.out <- NA ; slope.converged <-  NA }
 
  if(convergence.check){
- 
+
 # get the detailed conv check summary
   conv.out <- checkConvergence(mcmc.out=fit_mcmc, vars.check = c("slope","intercept","sigma"))
-  
+
 # call it "converged" if all criteria are met for "slope" (FOR NOW)
 # i.e. intercept or sigma could fail on one or more criteria, and it would still show "converged"
 # summary shows "flagged", so need opposite (not flagged = converged)
@@ -123,8 +123,8 @@ if(is.null(model.in)){model.in <- trend.bugs.1}
 
 # change it to just checking gelman-rubin < 1.1 for slope
 slope.converged <- !conv.out[conv.out$Check=="gelman.rubin.slope","Flag"]
- 
-  
+
+
  }
 
 
@@ -132,19 +132,19 @@ slope.converged <- !conv.out[conv.out$Check=="gelman.rubin.slope","Flag"]
 											slope.converged = slope.converged, conv.details = conv.out
 												)}
 
-	if(out.type=="long"){ out.list <- list(pchange = pchange,probdecl = probdecl, summary = mcmc.summary, 
+	if(out.type=="long"){ out.list <- list(pchange = pchange,probdecl = probdecl, summary = mcmc.summary,
 											slope.converged = slope.converged, conv.details = conv.out,
-											samples = mcmc.samples,jags.out = fit_mcmc)}	
-										
-		
-		
-	
+											samples = mcmc.samples,jags.out = fit_mcmc)}
+
+
+
+
 	} # end if not na.flag
-				
-	
+
+
 	return(out.list)
-	
-	
+
+
 }
 
 
@@ -155,8 +155,8 @@ slope.converged <- !conv.out[conv.out$Check=="gelman.rubin.slope","Flag"]
 
 checkConvergence <- function(mcmc.out, vars.check = c("slope","intercept","sigma")){
 # function to calculate acf, acf critical value, and geweke score, then output a summary table
-# mcmc.out = output from a calcPercChangeMCMC() call 
-# vars.check = variables for which to check convergence 
+# mcmc.out = output from a calcPercChangeMCMC() call
+# vars.check = variables for which to check convergence
 
 # Note: acf critical values should always be equal for all variables (same sample size),
 # but calculating separately just in case
@@ -229,7 +229,7 @@ calcACF <- function(mcmc.par,  crit.acf.buffer = 1,acf.plot=FALSE, plot.title = 
 # checked resulting value against default R plot to verify
 # R default acf plot uses 0.95, but that was usually cutting off at one or the other lag in the MCMC sample
 # Changing it to .90 actually lowers the critical value -> Need to work throug underlying rationale for this calc at some future point
-# for now, just adding an x% tolerance around it 
+# for now, just adding an x% tolerance around it
 
 acf.val <- acf(mcmc.par, main=plot.title,plot=acf.plot)
 acf.crit.val <- crit.acf.buffer * qnorm((1 + 0.95)/2)/sqrt(sum(!is.na(mcmc.par)))
@@ -308,7 +308,7 @@ abline(det.fit,col="darkblue",lwd=2) # simple regression - plot fitted line
 
 # independent medians
 if(mcmc.have){
-abline(median(mcmc.fit$samples[,"intercept"]), median(mcmc.fit$samples[,"slope"]), 
+abline(median(mcmc.fit$samples[,"intercept"]), median(mcmc.fit$samples[,"slope"]),
 					col="red",lwd=2,lty=2)
 }
 
