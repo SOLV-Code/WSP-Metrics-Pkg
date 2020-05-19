@@ -53,7 +53,7 @@ for(yr.use in yrs.list){
 yrs.vec <-  seq(yr.use- ((gen.in*slope.num.gen)-1+extra.yrs) ,yr.use)
 sub.idx <- dimnames(series.use)[[1]] %in% yrs.vec
 tmp.mat <- series.use[sub.idx,]
-out.mat[as.character(yr.use),] <- apply(tmp.mat, MARGIN=2,FUN= per.change.mod.fast,na.rm=FALSE)
+out.mat[as.character(yr.use),] <- apply(tmp.mat, MARGIN=2,FUN= per.change.mod.fast,na.rm=TRUE)
 
 } # end looping through years
 
