@@ -34,7 +34,7 @@ perc.change <- calcPercChange(X = exampleData,gen.in = 4,
                   slope.num.gen = 3, extra.yrs = 0,
                   genmean.smoothing = TRUE,
                   log.transform = TRUE,
-                  out.exp = FALSE, tracing=FALSE)
+                  out.exp = TRUE, tracing=FALSE)
 
 perc.change
 

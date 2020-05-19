@@ -11,14 +11,14 @@
 #' @param extra.yrs to handle COSEWIC "extra year". default is 0
 #' @param genmean.smoothing  if TRUE, apply the smoothSeries() function. default is TRUE
 #' @param log.transform   if TRUE, log-transform the time series before calculating the smoothed series. default is TRUE
-#' @param out.exp  if TRUE, take the exponent of the smoothed series before calculating the perc change. default is TRUE
+#' @param out.exp  if TRUE, take the exponent of the smoothed series for output. default is TRUE
 #' @param tracing if TRUE, print various diagnostics to the command line. default is FALSE
 #' @keywords percent change, slope
 #' @export
 
 
 calcPercChange  <- function(X,gen.in = 4, slope.num.gen = 3, extra.yrs = 0, genmean.smoothing = TRUE,
-                            log.transform = TRUE, out.exp = FALSE, tracing=FALSE){
+                            log.transform = TRUE, out.exp = TRUE, tracing=FALSE){
 
 # if genmean.smoothing
 if(genmean.smoothing){
