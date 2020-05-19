@@ -5,7 +5,7 @@
 #' For a single vector, use calcLongTermTrendSimple()
 #' @param X a data frame with Years x Stocks. Row labels are years, no missing years allowed, NA are possible, but will result in NA Trend for
 # any recent time window that includes one or more NA (for now: discuss infill options for future extensions, as in Ck implementation)
-#' @param extra.yrs to handle COSEWIC "extra year"
+#' @param extra.yrs to handle COSEWIC "extra year". Specifically, %declines are sometimes calculated over 3 generations + 1 year, so extra year=1
 #' @param min.yrs.used minimum number of years used to start the iterative calculations
 #' @param avg.type "mean","geomean", or "median"
 #' @param recent.excl if TRUE, then don't use the values from the recent gen as part of the LT avg
