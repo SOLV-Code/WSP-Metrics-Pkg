@@ -37,8 +37,8 @@ if(tolower(avg.type) == "mean"){
 	}
 
 if(tolower(avg.type) == "geomean"){
-	recent.avg <- expm1(mean(log1p(recent.vals), na.rm=FALSE))
-	longterm.avg <- expm1(mean(log1p(longterm.vals), na.rm=TRUE))
+	recent.avg <- exp(mean(log(recent.vals), na.rm=FALSE))
+	longterm.avg <- exp(mean(log(longterm.vals), na.rm=TRUE))
 	}
 
 if(tolower(avg.type) == "median"){
