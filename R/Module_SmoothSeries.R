@@ -2,7 +2,7 @@
 #'
 #' function to calculate a smoothed version of an input vector (calculate the running geometric mean of log_e
 #' transformed data)
-#' @param vec.in vector with numeric values
+#' @param vec.in vector with raw numeric values
 #' @param gen  generation time (i.e. number of years to average)
 #' @param filter.sides time window for gen avg (1 = past values only, 2= centered)
 #' @param out.exp if TRUE, then convert the output back from log space)
