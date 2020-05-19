@@ -44,7 +44,10 @@ perc.change
 
 pdf("ProbDecl_Fits.pdf",onefile=TRUE,height=8.5, width=11)
 
-vec.use = c(12,10,14,7,13,5,8,3,4,7,6,5)
+# Smooth the first 15 years of the Example Data- Stock1
+vec.use <- smoothSeries(exampleData[1:15,1], gen=4, filter.sides=1, log.transform = TRUE, out.exp = TRUE,na.rm=FALSE)
+vec.use <- vec.use[4:15] # Removing intial NAs
+
 slope.mcmc.fit <- calcPercChangeMCMC(vec.in= vec.use,model.in = NULL ,
                                      perc.change.bm = -25 , na.skip=FALSE,
                                      out.type = "long", mcmc.plots = TRUE)
