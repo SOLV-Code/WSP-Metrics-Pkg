@@ -1,18 +1,19 @@
 #' calcLongTermTrend
 #'
-#' this function applies a basic long-term trend to a data frame of Year x Stock,
+#' this function applies a basic long-term trend to a data frame of Year x Stock, iteratively for each year using only data prior to that year,
 #' with various user options (e.g. log transform, gen avg smoothing, time window to use).
 #' For a single vector, use calcLongTermTrendSimple()
-#' @param X a data frame with Years x Stocks. Row labels are years, no missing years allowed, NA are possible, but will result in NA Trend for
+#' @param X a data frame of raw values of dimensions  Years x Stocks. Row labels are years, no missing years allowed, NA are possible, but will result in NA Trend for
 # any recent time window that includes one or more NA (for now: discuss infill options for future extensions, as in Ck implementation)
-#' @param extra.yrs to handle COSEWIC "extra year"
+#' @param extra.yrs to handle COSEWIC "extra year". Specifically, %declines are sometimes calculated over 3 generations + 1 year, so extra year=1
+#' @param min.yrs.used minimum number of years used to start the iterative calculations
 #' @param avg.type "mean","geomean", or "median"
 #' @param recent.excl if TRUE, then don't use the values from the recent gen as part of the LT avg
 #' @keywords trend
 #' @export
 
 calcLongTermTrend  <- function(X,gen.in = 4, recent.num.gen = 1, extra.yrs = 0,
-							min.lt.yrs = 20, avg.type = "geomean", tracing=FALSE,
+							min.yrs.used = 20, avg.type = "geomean", tracing=FALSE,
 							recent.excl = FALSE){
 
 
@@ -29,8 +30,8 @@ yrs.list <-   as.numeric(dimnames(series.use)[[1]])
 
 first.yr <- min(yrs.list)
 
-# get first "recent" value at min.lt.yrs + 1, plus account for the COSEWIC extra yr option
-yrs.list <- yrs.list[  (min.lt.yrs + 1 + extra.yrs) :  length(yrs.list) ]
+# get first "recent" value at min.yrs.used + 1, plus account for the COSEWIC extra yr option
+yrs.list <- yrs.list[  (min.yrs.used + 1 + extra.yrs) :  length(yrs.list) ]
 if(tracing){print("yrs.list"); print(yrs.list)}
 
 
@@ -60,8 +61,8 @@ if(tolower(avg.type) == "mean"){
 	}
 
 if(tolower(avg.type) == "geomean"){
-	recent.avg <- expm1(colMeans(log1p(recent.mat), na.rm=FALSE))
-	longterm.avg <- expm1(colMeans(log1p(longterm.mat), na.rm=TRUE))
+	recent.avg <- exp(colMeans(log(recent.mat), na.rm=FALSE))
+	longterm.avg <- exp(colMeans(log(longterm.mat), na.rm=TRUE))
 	}
 
 if(tolower(avg.type) == "median"){

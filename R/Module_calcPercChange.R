@@ -1,23 +1,23 @@
 #' calcPercChange
 #'
-#' this function applies a basic deterministic % change calculation to a data frame of Year x Stock,
-#' with various user options (e.g. log transform, gen avg smoothing, time window to use).
-#' For a single vector, use  calcPercChangeSimple()
-#' @param X a data frame with Years x Stocks. Row labels are years, no missing years allowed, NA are possible, but will result in NA for
-# any recent time window that includes one or more NA (for now: discuss infill options for future extensions, as in Ck implementation)
+#' This function applies the calculation of percent change in abundance over time to a data frame (Year x Stock) iteratively for each year
+#' of the time-series using only the data prior to that year.
+#' It calculate declines over a specified number of generation and uses an exponential model to estimate decline rate, as per IUCN guidelines.
+#' For a single vector use  calcPercChangeSimple() to calculate percent declines over the entire time period.
+#' @param X a data frame of raw values with dimensions Years x Stocks. Row labels are years. NAs values are allowed.
 #' @param gen.in = average generation time
 #' @param slope.num.gen number of generations over which to calculate the perc change
 #' @param extra.yrs to handle COSEWIC "extra year". default is 0
 #' @param genmean.smoothing  if TRUE, apply the smoothSeries() function. default is TRUE
 #' @param log.transform   if TRUE, log-transform the time series before calculating the smoothed series. default is TRUE
-#' @param out.exp  if TRUE, take the exponent of the smoothed series before calculating the perc change. default is FALSE
+#' @param out.exp  if TRUE, take the exponent of the smoothed series for output. default is TRUE
 #' @param tracing if TRUE, print various diagnostics to the command line. default is FALSE
 #' @keywords percent change, slope
 #' @export
 
 
 calcPercChange  <- function(X,gen.in = 4, slope.num.gen = 3, extra.yrs = 0, genmean.smoothing = TRUE,
-                            log.transform = TRUE, out.exp = FALSE, tracing=FALSE){
+                            log.transform = TRUE, out.exp = TRUE, tracing=FALSE){
 
 # if genmean.smoothing
 if(genmean.smoothing){
@@ -52,7 +52,7 @@ for(yr.use in yrs.list){
 yrs.vec <-  seq(yr.use- ((gen.in*slope.num.gen)-1+extra.yrs) ,yr.use)
 sub.idx <- dimnames(series.use)[[1]] %in% yrs.vec
 tmp.mat <- series.use[sub.idx,]
-out.mat[as.character(yr.use),] <- apply(tmp.mat, MARGIN=2,FUN= per.change.mod.fast,na.rm=FALSE)
+out.mat[as.character(yr.use),] <- apply(tmp.mat, MARGIN=2,FUN= per.change.mod.fast,na.rm=TRUE)
 
 } # end looping through years
 
