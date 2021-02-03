@@ -14,7 +14,7 @@ calcLongTermTrendSimple(
 )
 }
 \arguments{
-\item{vec.in}{a vector of values. NA are possible, but will result in NA trend for any recent time window that includes one or more NA}
+\item{vec.in}{a vector of raw values. NA are possible, but will result in NA trend for any recent time window that includes one or more NA}
 
 \item{gen.in}{use the last gen.in values for the "recent" avg}
 
@@ -26,12 +26,10 @@ calcLongTermTrendSimple(
 }
 \description{
 this function just does a basic long-term trend calculation on a single vector.
-calcLongTermTrend() applies the same basic calc retrospectively to a data frame of Year x Stock,
+calcLongTermTrend() applies the same basic calculation iteratively for each year and stock in a data frame (Year X Stock) using only data prior to that year.
 }
 \examples{
-calcLongTermTrendSimple(vec.in = as.vector(Nile) ,
-gen.in = 4,min.lt.yrs = 20, avg.type = "geomean",
-tracing=FALSE,
-recent.excl = FALSE)
+calcLongTermTrendSimple(vec.in = exampleData$Stock1, gen.in = 4,min.lt.yrs = 20,
+avg.type = "geomean", tracing=FALSE,recent.excl = FALSE)
 }
 \keyword{trend}

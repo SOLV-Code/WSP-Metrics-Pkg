@@ -14,7 +14,7 @@ smoothSeries(
 )
 }
 \arguments{
-\item{vec.in}{vector with numeric values}
+\item{vec.in}{vector with raw numeric values}
 
 \item{gen}{generation time (i.e. number of years to average)}
 

@@ -15,7 +15,7 @@ calcPercChangeMCMC(
 )
 }
 \arguments{
-\item{vec.in}{vector with numeric values}
+\item{vec.in}{vector of raw numeric values}
 
 \item{model.in}{if NULL, use the BUGS code in the built in function trend.bugs.1()}
 
@@ -23,12 +23,12 @@ calcPercChangeMCMC(
 
 \item{na.skip}{if TRUE, skip the calculations when vec.in contains any NA}
 
-\item{out.type}{"short" or "long". 
+\item{out.type}{"short" or "long".
 "short" gives summary table of posterior plus "PercChange" and "ProbDecl"
 "long" also includes the full mcmc samples and the jags output object}
 
-\item{mcmc.plots}{if true, create the standard series of MCMC diagnostic plots 
-Note that these are printed to the default device 
+\item{mcmc.plots}{if true, create the standard series of MCMC diagnostic plots
+Note that these are printed to the default device
 (i.e. need to external wrap the function call inside a pdf /dev.off call)
 To get a plot of the model fit, run this function with out.type = "long",
 and then use plot.trend.fit().}
@@ -36,7 +36,9 @@ and then use plot.trend.fit().}
 \item{convergence.check}{if TRUE, do an automated convergence check}
 }
 \description{
-MCMC version of trend metric calculation (replaces old version based on PBSModelling and Metropolis algorithm)
+Bayesian estimation of short-term trends, using MCMC in JAGS (replaces old WSP version based on PBSModelling and Metropolis algorithm)
+This function calculates the percent change in abundances based on an exponential model of population decline, as per IUCN guidelines
+It esimates a distribution of percent declines over the period of the time-seris, and provides the probability of declines being greater than a specified threhold
 }
 \keyword{MCMC,}
 \keyword{slope,}
