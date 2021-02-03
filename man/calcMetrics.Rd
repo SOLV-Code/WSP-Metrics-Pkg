@@ -13,9 +13,11 @@ calcMetrics(
   series.label = "DataVersion",
   slope.specs = list(num.gen = 3, extra.yrs = 0, filter.sides = 1, log.transform =
     TRUE, out.exp = TRUE, na.rm = FALSE),
-  avg.specs = list(avg.type = "geomean", recent.excl = FALSE, min.lt.yrs = 20),
+  avg.specs = list(avg.type = "geomean", recent.excl = FALSE, min.lt.yrs = 20,
+    min.perc.yrs = 20),
   metric.bm = list(RelAbd = c(NA, NA), AbsAbd = c(1000, 10000), LongTrend = c(0.5,
-    0.75), PercChange = c(-25, -15), ProbDeclBelowLBM = c(NA, NA)),
+    0.75), PercChange = c(-25, -15), ProbDeclBelowLBM = c(NA, NA), Percentile = c(0.25,
+    0.5)),
   retro.start = NULL,
   tracing = TRUE
 )
@@ -23,7 +25,7 @@ calcMetrics(
 \arguments{
 \item{series.in}{vector with numeric values}
 
-\item{yrs.in}{vector of years corresponding to the values in series.in 
+\item{yrs.in}{vector of years corresponding to the values in series.in
 (missing yrs need to be included as NA values in series.in)}
 
 \item{gen.in}{integer value with avg generation time}
@@ -36,7 +38,7 @@ calcMetrics(
 
 \item{slope.specs}{list with arguments for the slope function NAME, see details there}
 
-\item{avg.specs}{list with arguments for the avg function NAME, see details there}
+\item{avg.specs}{list with arguments for the individual metric functions, see details there. (SHOULD CHANGE ARG NAME)}
 
 \item{metric.bm}{list with upper and lower benchmarks for each metric}
 

@@ -33,7 +33,7 @@ Also note the comments re: percentile benchmarks in the documentation for \code{
 }
 \examples{
 calcPercentileSimple(vec.in = as.vector(Nile) ,
-gen.in = 4,min.lt.yrs = 20, avg.type = "geomean",
+gen.in = 4,min.perc.yrs = 20, avg.type = "geomean",
 tracing=FALSE,
 recent.excl = FALSE)
 }

@@ -9,23 +9,25 @@ calcLongTermTrend(
   gen.in = 4,
   recent.num.gen = 1,
   extra.yrs = 0,
-  min.lt.yrs = 20,
+  min.yrs.used = 20,
   avg.type = "geomean",
   tracing = FALSE,
   recent.excl = FALSE
 )
 }
 \arguments{
-\item{X}{a data frame with Years x Stocks. Row labels are years, no missing years allowed, NA are possible, but will result in NA Trend for}
+\item{X}{a data frame of raw values of dimensions  Years x Stocks. Row labels are years, no missing years allowed, NA are possible, but will result in NA Trend for}
 
-\item{extra.yrs}{to handle COSEWIC "extra year"}
+\item{extra.yrs}{to handle COSEWIC "extra year". Specifically, %declines are sometimes calculated over 3 generations + 1 year, so extra year=1}
+
+\item{min.yrs.used}{minimum number of years used to start the iterative calculations}
 
 \item{avg.type}{"mean","geomean", or "median"}
 
 \item{recent.excl}{if TRUE, then don't use the values from the recent gen as part of the LT avg}
 }
 \description{
-this function applies a basic long-term trend to a data frame of Year x Stock,
+this function applies a basic long-term trend to a data frame of Year x Stock, iteratively for each year using only data prior to that year,
 with various user options (e.g. log transform, gen avg smoothing, time window to use).
 For a single vector, use calcLongTermTrendSimple()
 }

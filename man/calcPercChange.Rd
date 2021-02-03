@@ -11,12 +11,12 @@ calcPercChange(
   extra.yrs = 0,
   genmean.smoothing = TRUE,
   log.transform = TRUE,
-  out.exp = FALSE,
+  out.exp = TRUE,
   tracing = FALSE
 )
 }
 \arguments{
-\item{X}{a data frame with Years x Stocks. Row labels are years, no missing years allowed, NA are possible, but will result in NA for}
+\item{X}{a data frame of raw values with dimensions Years x Stocks. Row labels are years. NAs values are allowed.}
 
 \item{gen.in}{= average generation time}
 
@@ -28,14 +28,15 @@ calcPercChange(
 
 \item{log.transform}{if TRUE, log-transform the time series before calculating the smoothed series. default is TRUE}
 
-\item{out.exp}{if TRUE, take the exponent of the smoothed series before calculating the perc change. default is FALSE}
+\item{out.exp}{if TRUE, take the exponent of the smoothed series for output. default is TRUE}
 
 \item{tracing}{if TRUE, print various diagnostics to the command line. default is FALSE}
 }
 \description{
-this function applies a basic deterministic % change calculation to a data frame of Year x Stock,
-with various user options (e.g. log transform, gen avg smoothing, time window to use).
-For a single vector, use  calcPercChangeSimple()
+This function applies the calculation of percent change in abundance over time to a data frame (Year x Stock) iteratively for each year
+of the time-series using only the data prior to that year.
+It calculate declines over a specified number of generation and uses an exponential model to estimate decline rate, as per IUCN guidelines.
+For a single vector use  calcPercChangeSimple() to calculate percent declines over the entire time period.
 }
 \keyword{change,}
 \keyword{percent}

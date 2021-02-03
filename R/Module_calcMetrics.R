@@ -9,7 +9,7 @@
 #' @param species.label  label to be used in output file (e.g. "Sk")
 #' @param series.label  label to be used in output file   (e.g. "LogSm_TotSpn")
 #' @param slope.specs  list with arguments for the slope function NAME, see details there
-#' @param avg.specs  list with arguments for the avg function NAME, see details there
+#' @param avg.specs  list with arguments for the individual metric functions, see details there. (SHOULD CHANGE ARG NAME)
 #' @param metric.bm list with upper and lower benchmarks for each metric
 #' @param retro.start user-specified year. if NULL, do retrospective for last 9 yrs of the series
 #' @param tracing if TRUE, print lots of diagnostic/tracking info to the command lines
@@ -26,11 +26,12 @@ calcMetrics <- function(  series.in, yrs.in, gen.in,
 							slope.specs = list(num.gen = 3, extra.yrs = 0,filter.sides=1,
 										log.transform = TRUE, out.exp = TRUE,na.rm=FALSE),
 							avg.specs = list(avg.type = "geomean",recent.excl=FALSE,
-										min.lt.yrs =20),
+										min.lt.yrs =20,min.perc.yrs =20),
 							metric.bm =  list(RelAbd = c(NA,NA),  AbsAbd = c(1000,10000),
 										LongTrend = c(0.5,0.75),
 										PercChange = c(-25,-15),
-										ProbDeclBelowLBM = c(NA,NA)),
+										ProbDeclBelowLBM = c(NA,NA),
+										Percentile = c(0.25,0.5)),
 							retro.start = NULL,
 							tracing = TRUE){
 
@@ -85,12 +86,18 @@ out.df$Value[out.df$Year == yr.do & out.df$Metric == "LongTrend"] <- round(lt.tr
 out.df[out.df$Year == yr.do & out.df$Metric == "LongTrend",c("LBM","UBM")] <- metric.bm$LongTrend
 
 
+# -----------------------------------------------------------
+# CALCULATE RELATIVE BM - PERCENTILE
+# NOTE: uses the smoothed series
 
-perc.out <-
+perc.out <- calcPercentileSimple(vec.in=series.smoothed[yrs.in <= yr.do],gen.in = gen.in,
+                                    min.perc.yrs = avg.specs$min.perc.yrs,
+                                    avg.type = avg.specs$avg.type,
+                                    tracing=FALSE,
+                                    recent.excl = avg.specs$recent.excl)
 
-
-
-
+out.df$Value[out.df$Year == yr.do & out.df$Metric == "Percentile"] <- round(perc.out$percentile,4)
+out.df[out.df$Year == yr.do & out.df$Metric == "Percentile",c("LBM","UBM")] <- metric.bm$Percentile
 
 
 # -----------------------------------------------------------
