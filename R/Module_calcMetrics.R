@@ -1,15 +1,15 @@
 #' calcMetrics
 #'
 #' Main function that applies all the individual metric functions and produces a summary output
-#' @param series.in vector with numeric values  
-#' @param yrs.in vector of years corresponding to the values in series.in 
+#' @param series.in vector with numeric values
+#' @param yrs.in vector of years corresponding to the values in series.in
 #'    (missing yrs need to be included as NA values in series.in)
 #' @param gen.in  integer value with avg generation time
 #' @param stk.label  label to be used in output file (e.g. "EStu")
 #' @param species.label  label to be used in output file (e.g. "Sk")
 #' @param series.label  label to be used in output file   (e.g. "LogSm_TotSpn")
-#' @param slope.specs  list with arguments for the slope function NAME, see details there 
-#' @param avg.specs  list with arguments for the avg function NAME, see details there 
+#' @param slope.specs  list with arguments for the slope function NAME, see details there
+#' @param avg.specs  list with arguments for the individual metric functions, see details there. (SHOULD CHANGE ARG NAME)
 #' @param metric.bm list with upper and lower benchmarks for each metric
 #' @param retro.start user-specified year. if NULL, do retrospective for last 9 yrs of the series
 #' @param tracing if TRUE, print lots of diagnostic/tracking info to the command lines
@@ -23,15 +23,16 @@ calcMetrics <- function(  series.in, yrs.in, gen.in,
 							stk.label = "Stock",
 							species.label = "Species",
 							series.label = "DataVersion",
-							slope.specs = list(num.gen = 3, extra.yrs = 0,filter.sides=1, 
+							slope.specs = list(num.gen = 3, extra.yrs = 0,filter.sides=1,
 										log.transform = TRUE, out.exp = TRUE,na.rm=FALSE),
-							avg.specs = list(avg.type = "geomean",recent.excl=FALSE, 
-										min.lt.yrs =20),
+							avg.specs = list(avg.type = "geomean",recent.excl=FALSE,
+										min.lt.yrs =20,min.perc.yrs =20),
 							metric.bm =  list(RelAbd = c(NA,NA),  AbsAbd = c(1000,10000),
 										LongTrend = c(0.5,0.75),
 										PercChange = c(-25,-15),
-										ProbDeclBelowLBM = c(NA,NA)),
-							retro.start = NULL, 
+										ProbDeclBelowLBM = c(NA,NA),
+										Percentile = c(0.25,0.5)),
+							retro.start = NULL,
 							tracing = TRUE){
 
 
@@ -54,7 +55,7 @@ names(out.df) <- c("Species", "Stock","Label", "Year","Metric")
 out.df[val.cols] <- NA
 
 # create smoothed/transformed version of the series for slope calcs
-series.smoothed <- smoothSeries(series.in,gen = gen.in, filter.sides=slope.specs$filter.sides, 
+series.smoothed <- smoothSeries(series.in,gen = gen.in, filter.sides=slope.specs$filter.sides,
             log.transform = slope.specs$log.transform, out.exp = slope.specs$out.exp,na.rm=slope.specs$na.rm)
 
 
@@ -64,32 +65,44 @@ for(yr.do in retro.yrs ){
 if(tracing){
   print("-------------------------------------------")
   print(yr.do)
-}  
+}
 
-  
 
-  
-  
-# -----------------------------------------------------------    
+
+
+
+# -----------------------------------------------------------
 # CALCULATE LONG TERM TREND
 #  also produces last gen avg (based on specs)
-# NOTE: uses the smoothed series  
-  
+# NOTE: uses the smoothed series
+
 lt.trend.out <- calcLongTermTrendSimple(vec.in=series.smoothed[yrs.in <= yr.do],gen.in = gen.in,
-                                        min.lt.yrs = avg.specs$min.lt.yrs, 
-                                        avg.type = avg.specs$avg.type, 
+                                        min.lt.yrs = avg.specs$min.lt.yrs,
+                                        avg.type = avg.specs$avg.type,
                                         tracing=FALSE,
                                         recent.excl = avg.specs$recent.excl)
-  
+
 out.df$Value[out.df$Year == yr.do & out.df$Metric == "LongTrend"] <- round(lt.trend.out$lt.trend/100,4)
 out.df[out.df$Year == yr.do & out.df$Metric == "LongTrend",c("LBM","UBM")] <- metric.bm$LongTrend
 
-  
-    
-    
-# -----------------------------------------------------------    
-# CALCULATE RELATIVE ABUNDANCE  METRIC  
-    
+
+# -----------------------------------------------------------
+# CALCULATE RELATIVE BM - PERCENTILE
+# NOTE: uses the smoothed series
+
+perc.out <- calcPercentileSimple(vec.in=series.smoothed[yrs.in <= yr.do],gen.in = gen.in,
+                                    min.perc.yrs = avg.specs$min.perc.yrs,
+                                    avg.type = avg.specs$avg.type,
+                                    tracing=FALSE,
+                                    recent.excl = avg.specs$recent.excl)
+
+out.df$Value[out.df$Year == yr.do & out.df$Metric == "Percentile"] <- round(perc.out$percentile,4)
+out.df[out.df$Year == yr.do & out.df$Metric == "Percentile",c("LBM","UBM")] <- metric.bm$Percentile
+
+
+# -----------------------------------------------------------
+# CALCULATE RELATIVE ABUNDANCE  METRIC
+
 out.df$Value[out.df$Year == yr.do & out.df$Metric == "RelAbd"] <- round(lt.trend.out$recent.avg,4)
 
 # calculate  p25 and p75 for the BM if NA
@@ -103,25 +116,25 @@ out.df[out.df$Year == yr.do & out.df$Metric == "RelAbd",c("LBM","UBM")] <- c(lbm
 
 
 
-# -----------------------------------------------------------    
+# -----------------------------------------------------------
 # CALCULATE ABSOLUTE ABUNDANCE METRIC
-    
+
 out.df$Value[out.df$Year == yr.do & out.df$Metric == "AbsAbd"] <- round(lt.trend.out$recent.avg,4)
 out.df[out.df$Year == yr.do & out.df$Metric == "AbsAbd",c("LBM","UBM")] <- metric.bm$AbsAbd
 
-  
-# -----------------------------------------------------------  
+
+# -----------------------------------------------------------
 # CALCULATE PERC CHANGE AND PROB DECL
 if(tracing){ print("starting Perc Change and Prob Decl -")}
-  
+
 # get the last n gen (+ extra years if specified)
 yrs.use <- (yr.do - (slope.specs$extra.yrs -1 + gen.in*slope.specs$num.gen)) :  yr.do
 vec.use <- series.smoothed[yrs.in %in% yrs.use]
-  
-if(tracing){print(yrs.use); print(vec.use)} 
-  
-pchange.mcmc <- calcPercChangeMCMC(vec.in= vec.use,model.in = trend.bugs.1 , 
-                                   perc.change.bm = metric.bm$PercChange[1] , na.skip=FALSE, 
+
+if(tracing){print(yrs.use); print(vec.use)}
+
+pchange.mcmc <- calcPercChangeMCMC(vec.in= vec.use,model.in = trend.bugs.1 ,
+                                   perc.change.bm = metric.bm$PercChange[1] , na.skip=FALSE,
                                    out.type = "short", mcmc.plots = FALSE)
 
 
@@ -132,13 +145,13 @@ out.df$Value[out.df$Year == yr.do & out.df$Metric == "ProbDeclBelowLBM"] <- roun
 out.df[out.df$Year == yr.do & out.df$Metric == "ProbDeclBelowLBM",c("LBM","UBM")] <- metric.bm$ProbDeclBelowLBM
 
 
-  
+
 } # end looping through years
 
 
 
 
-# -----------------------------------------------------------  
+# -----------------------------------------------------------
 # ADD IN  STATUS
 # how to do this in tidyverse?
 
