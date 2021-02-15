@@ -143,10 +143,14 @@ if(avg.specs$rel.avg.type == "regular"){
 # # BMac edit - do not use the the p25 or p75 if no BM available, this should just be NA if not available
 #if(is.na(metric.bm$RelAbd[1])){lbm.use <- quantile(series.smoothed[yrs.in <= yr.do],probs = 0.25,na.rm=TRUE) }
 #if(!is.na(metric.bm$RelAbd[1])){lbm.use <- metric.bm$RelAbd[1] }
+#if(is.na(metric.bm$RelAbd[2])){ubm.use <- quantile(series.smoothed[yrs.in <= yr.do],probs = 0.75,na.rm=TRUE) }
+#if(!is.na(metric.bm$RelAbd[2])){ubm.use <- metric.bm$RelAbd[2] }
 
-if(is.na(metric.bm$RelAbd[2])){ubm.use <- quantile(series.smoothed[yrs.in <= yr.do],probs = 0.75,na.rm=TRUE) }
-if(!is.na(metric.bm$RelAbd[2])){ubm.use <- metric.bm$RelAbd[2] }
+if(!is.na(metric.bm$RelAbd[1])){lbm.use <- metric.bm$RelAbd[1]
+                                ubm.use <- metric.bm$RelAbd[2]
+                                }
 
+if(is.na(metric.bm$RelAbd[1])){lbm.use <- ubm.use <- NA }
 
 out.df[out.df$Year == yr.do & out.df$Metric == "RelAbd",c("LBM","UBM")] <- c(lbm.use,ubm.use)
 
