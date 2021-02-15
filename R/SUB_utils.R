@@ -5,6 +5,8 @@ include.dependencies <- function(){
 #' @import tidyverse
 #' @import R2jags
 #' @import coda
+#' @import rstanarm
+#' @import rstan
 #' @export
 
 
