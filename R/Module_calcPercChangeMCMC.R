@@ -2,7 +2,7 @@
 #'
 #' MCMC version of trend metric calculation
 #' This function calculates the percent change in abundances based on an exponential model of population decline, as per IUCN guidelines
-#' It etsimates a distribution of percent declines over the period of the time-series, and provides the probability of declines being greater than a specified threhold
+#' It estimates a distribution of percent declines over the period of the time-series, and provides the probability of declines being greater than a specified threhold
 #' @param vec.in vector with numeric values
 #' @param method either "jags" (default), "rstanarm", or "rstan". For properties and discussion of strengths/limitations, refer to the \href{https://github.com/SOLV-Code/MetricsCOSEWIC/wiki/1-Probability-of-Decline:-Estimation-Methods}{MetricsCOSEWIC wiki}.
 #' @param model.in if NULL, use the built in functions for each method: trend.bugs.1() for jags, ETC
@@ -24,7 +24,8 @@
 calcPercChangeMCMC <-function(vec.in,method = "jags",model.in = NULL , perc.change.bm = -25 , na.skip = FALSE,
 							out.type = "short",
 							mcmc.plots = FALSE,
-							convergence.check = FALSE
+							convergence.check = FALSE,
+							logged = TRUE
 							){
 
   na.flag <- sum(is.na(vec.in)) > 0  & na.skip
