@@ -2,7 +2,7 @@
 #'
 #' MCMC version of trend metric calculation
 #' This function calculates the percent change in abundances based on an exponential model of population decline, as per IUCN guidelines
-#' It esimates a distribution of percent declines over the period of the time-seris, and provides the probability of declines being greater than a specified threhold
+#' It etsimates a distribution of percent declines over the period of the time-series, and provides the probability of declines being greater than a specified threhold
 #' @param vec.in vector with numeric values
 #' @param method either "jags" (default), "rstanarm", or "rstan". For properties and discussion of strengths/limitations, refer to the \href{https://github.com/SOLV-Code/MetricsCOSEWIC/wiki/1-Probability-of-Decline:-Estimation-Methods}{MetricsCOSEWIC wiki}.
 #' @param model.in if NULL, use the built in functions for each method: trend.bugs.1() for jags, ETC
@@ -17,6 +17,7 @@
 #'    To get a plot of the model fit, run this function with out.type = "long",
 #'    and then use plot.trend.fit().
 #' @param convergence.check if TRUE, do an automated convergence check
+#' @param logged if TRUE, then the input is already log-transformed, and the Perc Change is calculated on the exponentiated fitted values. Default is TRUE
 #' @keywords MCMC, slope, trend
 #' @export
 
@@ -92,9 +93,19 @@ if(is.null(model.in)){model.in <- trend.bugs.1}
 		mcmc.samples[,"Perc_Change_Raw"][neg.start.idx] <- (mcmc.samples[,"Fit_End"][neg.start.idx] + mcmc.samples[,"Fit_Start"][neg.start.idx]) /  abs(mcmc.samples[,"Fit_Start"][neg.start.idx]) * 100
 
 
+		if(logged){ #if original input is already log-transformed, then calc % change on exponentiated values
 		mcmc.samples[,"Perc_Change"][!neg.start.idx] <- (exp(mcmc.samples[,"Fit_End"][!neg.start.idx]) - exp(mcmc.samples[,"Fit_Start"][!neg.start.idx])) /  exp(mcmc.samples[,"Fit_Start"][!neg.start.idx]) * 100
 		# NEED TO DISCUSS/CHECK THIS
 		mcmc.samples[,"Perc_Change"][neg.start.idx] <- (exp(mcmc.samples[,"Fit_End"][neg.start.idx]) + exp(mcmc.samples[,"Fit_Start"][neg.start.idx])) /  exp(abs(mcmc.samples[,"Fit_Start"][neg.start.idx])) * 100
+		}
+
+
+		if(!logged){ #if original input is not log-transformed, just use the same
+		  mcmc.samples[,"Perc_Change"] <- mcmc.samples[,"Perc_Change_Raw"]
+		}
+
+
+
 		# should do the same for summary table
 
 		#print(head(mcmc.samples))
@@ -203,11 +214,16 @@ if(is.null(model.in)){model.in <- trend.bugs.1}
     mcmc.samples[,"Perc_Change_Raw"][neg.start.idx] <- (mcmc.samples[,"Fit_End"][neg.start.idx] + mcmc.samples[,"Fit_Start"][neg.start.idx]) /  abs(mcmc.samples[,"Fit_Start"][neg.start.idx]) * 100
 
 
-    mcmc.samples[,"Perc_Change"][!neg.start.idx] <- (exp(mcmc.samples[,"Fit_End"][!neg.start.idx]) - exp(mcmc.samples[,"Fit_Start"][!neg.start.idx])) /  exp(mcmc.samples[,"Fit_Start"][!neg.start.idx]) * 100
-    # NEED TO DISCUSS/CHECK THIS
-    mcmc.samples[,"Perc_Change"][neg.start.idx] <- (exp(mcmc.samples[,"Fit_End"][neg.start.idx]) + exp(mcmc.samples[,"Fit_Start"][neg.start.idx])) /  exp(abs(mcmc.samples[,"Fit_Start"][neg.start.idx])) * 100
+    if(logged){ #if original input is already log-transformed, then calc % change on exponentiated values
+      mcmc.samples[,"Perc_Change"][!neg.start.idx] <- (exp(mcmc.samples[,"Fit_End"][!neg.start.idx]) - exp(mcmc.samples[,"Fit_Start"][!neg.start.idx])) /  exp(mcmc.samples[,"Fit_Start"][!neg.start.idx]) * 100
+      # NEED TO DISCUSS/CHECK THIS
+      mcmc.samples[,"Perc_Change"][neg.start.idx] <- (exp(mcmc.samples[,"Fit_End"][neg.start.idx]) + exp(mcmc.samples[,"Fit_Start"][neg.start.idx])) /  exp(abs(mcmc.samples[,"Fit_Start"][neg.start.idx])) * 100
+    }
 
 
+    if(!logged){ #if original input is not log-transformed, just use the same
+      mcmc.samples[,"Perc_Change"] <- mcmc.samples[,"Perc_Change_Raw"]
+    }
     # should do the same for summary table
 
     pchange <- median(mcmc.samples[,"Perc_Change"])
