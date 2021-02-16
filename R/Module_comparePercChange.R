@@ -26,19 +26,23 @@ est.jags <- calcPercChangeMCMC(vec.in = log(du.df.sub[,2]),
                                method = "jags",
                                model.in = NULL, # this defaults to the BUGS code in the built in function trend.bugs.1()
                                perc.change.bm = -25,
+							    na.skip = FALSE,
                                out.type = "long",
                                mcmc.plots = FALSE,
-                               convergence.check = FALSE# ??Conv check crashes on ts() ??? -> change to Rhat check
+                               convergence.check = FALSE, # ??Conv check crashes on ts() ??? -> change to Rhat check
+							   logged = TRUE
                                 )
 
 est.rstanarm <- calcPercChangeMCMC(vec.in = log(du.df.sub[,2]),
                                    method = "rstanarm",
                                    model.in = NULL, # hardwired regression model form, so no input
                                    perc.change.bm = -25,
+								   na.skip = FALSE,
                                    out.type = "long",
                                    mcmc.plots = FALSE,
-                                   convergence.check = FALSE# NOT IMPLEMENTED YET
-)
+                                   convergence.check = FALSE, # NOT IMPLEMENTED YET
+								   logged = TRUE
+								   )
 
 
 percentile.values <- c(0.025,0.25,0.5,0.75,0.975)

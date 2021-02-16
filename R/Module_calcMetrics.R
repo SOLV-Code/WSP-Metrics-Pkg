@@ -58,6 +58,7 @@ out.df <- expand.grid(species.label, stk.label,series.label,retro.yrs,metric.lab
 names(out.df) <- c("Species", "Stock","Label", "Year","Metric")
 out.df[val.cols] <- NA
 
+# STEP SMOOTH! 
 # create smoothed/transformed version of the series for slope calcs
 series.smoothed <- smoothSeries(series.in,gen = gen.in, filter.sides=slope.specs$filter.sides,
             log.transform = slope.specs$log.transform,
@@ -82,17 +83,17 @@ if(tracing){
 # NOTE: uses the smoothed series
 
 
-if(avg.specs$lt.smooth == TRUE) lt.trend.out <- calcLongTermTrendSimple(vec.in=series.smoothed[yrs.in <= yr.do],gen.in = gen.in,
+if(avg.specs$lt.smooth == TRUE) {lt.trend.out <- calcLongTermTrendSimple(vec.in=series.smoothed[yrs.in <= yr.do],gen.in = gen.in,
                                                                         min.lt.yrs = avg.specs$min.lt.yrs,
                                                                         avg.type = avg.specs$avg.type,
                                                                         tracing=FALSE,
-                                                                        recent.excl = avg.specs$recent.excl)
+                                                                        recent.excl = avg.specs$recent.excl)}
 
-if(avg.specs$lt.smooth == FALSE) lt.trend.out <- calcLongTermTrendSimple(vec.in=series.in[yrs.in <= yr.do],gen.in = gen.in,
+if(avg.specs$lt.smooth == FALSE){ lt.trend.out <- calcLongTermTrendSimple(vec.in=series.in[yrs.in <= yr.do],gen.in = gen.in,
                                                                          min.lt.yrs = avg.specs$min.lt.yrs,
                                                                          avg.type = avg.specs$avg.type,
                                                                          tracing=FALSE,
-                                                                         recent.excl = avg.specs$recent.excl)
+                                                                         recent.excl = avg.specs$recent.excl)}
 
 out.df$Value[out.df$Year == yr.do & out.df$Metric == "LongTrend"] <- round(lt.trend.out$lt.trend/100,4)
 out.df[out.df$Year == yr.do & out.df$Metric == "LongTrend",c("LBM","UBM")] <- metric.bm$LongTrend
@@ -196,9 +197,27 @@ if(slope.specs$slope.smooth == FALSE){ vec.use <- series.in[yrs.in %in% yrs.use]
 
 if(tracing){print(yrs.use); print(vec.use)}
 
-pchange.mcmc <- calcPercChangeMCMC(vec.in= vec.use,model.in = trend.bugs.1 ,
-                                   perc.change.bm = metric.bm$PercChange[1] , na.skip=FALSE,
-                                   out.type = "short", mcmc.plots = FALSE)
+#old fn call
+#pchange.mcmc <- calcPercChangeMCMC(vec.in= vec.use,model.in = trend.bugs.1 ,
+#                                   perc.change.bm = metric.bm$PercChange[1] , na.skip=FALSE,
+#                                   out.type = "short", mcmc.plots = FALSE)
+
+# if out.exp =  TRUE, then the smoothed series was back-transformed from log space
+# and need to log-transform before trend calc, b/c
+# using logged = TRUE in this fn call
+if(slope.specs$out.exp){trend.vec <- log(vec.use)}
+if(!slope.specs$out.exp){trend.vec <- vec.use}
+
+pchange.mcmc <- calcPercChangeMCMC(vec.in = ,
+                               method = "jags",
+                               model.in = NULL, # this defaults to the BUGS code in the built in function trend.bugs.1()
+                               perc.change.bm = -25,
+							    na.skip = FALSE,
+                               out.type = "long",
+                               mcmc.plots = FALSE,
+                               convergence.check = FALSE, # ??Conv check crashes on ts() ??? -> change to Rhat check
+							   logged = TRUE
+                                )
 
 
 out.df$Value[out.df$Year == yr.do & out.df$Metric == "PercChange"] <- round(pchange.mcmc$pchange,4)
