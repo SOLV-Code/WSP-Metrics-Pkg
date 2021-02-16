@@ -189,26 +189,26 @@ if(tracing){ print("starting Perc Change and Prob Decl -")}
 yrs.use <- (yr.do - (slope.specs$extra.yrs -1 + gen.in*slope.specs$num.gen)) :  yr.do
 
 # Add in smoothed or not! *BLM July 22 2020 ********************************
-if(slope.specs$slope.smooth == TRUE){ vec.use <- series.smoothed[yrs.in %in% yrs.use]}
-if(slope.specs$slope.smooth == FALSE){ vec.use <- series.in[yrs.in %in% yrs.use]}
+# Added in log y/n GP Feb 2021
+# if out.exp =  TRUE, then the smoothed series was back-transformed from log space
+# and need to log-transform before trend calc, b/c
+# using logged = TRUE in the call to calcPercChangeMCMC() below
+if(slope.specs$slope.smooth == TRUE){ 
+						vec.use <- series.smoothed[yrs.in %in% yrs.use]
+							if(slope.specs$out.exp){trend.vec <- log(vec.use)}
+							if(!slope.specs$out.exp){trend.vec <- vec.use}
+							}
+							
+if(slope.specs$slope.smooth == FALSE){ trend.vec <- log(series.in[yrs.in %in% yrs.use])   }
 
-
-
-
-if(tracing){print(yrs.use); print(vec.use)}
+if(tracing){print(yrs.use); print(trend.vec)}
 
 #old fn call
 #pchange.mcmc <- calcPercChangeMCMC(vec.in= vec.use,model.in = trend.bugs.1 ,
 #                                   perc.change.bm = metric.bm$PercChange[1] , na.skip=FALSE,
 #                                   out.type = "short", mcmc.plots = FALSE)
 
-# if out.exp =  TRUE, then the smoothed series was back-transformed from log space
-# and need to log-transform before trend calc, b/c
-# using logged = TRUE in this fn call
-if(slope.specs$out.exp){trend.vec <- log(vec.use)}
-if(!slope.specs$out.exp){trend.vec <- vec.use}
-
-pchange.mcmc <- calcPercChangeMCMC(vec.in = ,
+pchange.mcmc <- calcPercChangeMCMC(vec.in = trend.vec,
                                method = "jags",
                                model.in = NULL, # this defaults to the BUGS code in the built in function trend.bugs.1()
                                perc.change.bm = -25,
