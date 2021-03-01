@@ -47,6 +47,7 @@ if(tolower(avg.type) == "geomean"){
 
   tmp.vals <- longterm.vals
   zero.idx <- tmp.vals == 0
+  zero.idx[is.na(zero.idx)] <- FALSE
 
   tmp.vals[zero.idx] <- runif(sum(zero.idx,na.rm = TRUE),0, min(longterm.vals[!zero.idx],na.rm = TRUE))
 
