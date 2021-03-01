@@ -37,8 +37,23 @@ if(tolower(avg.type) == "mean"){
 	}
 
 if(tolower(avg.type) == "geomean"){
-	recent.avg <- exp(mean(log(recent.vals), na.rm=FALSE))
-	longterm.avg <- exp(mean(log(longterm.vals), na.rm=TRUE))
+
+  # If any zeroes in the data, then this version generates longterm.avg = 0 and Longtrend metrics  = Inf
+  #recent.avg <- exp(mean(log(recent.vals), na.rm=FALSE))
+	#longterm.avg <- exp(mean(log(longterm.vals), na.rm=TRUE))
+
+	# using the strategy from Perry et al 2021 (https://journals.plos.org/plosone/article/comments?id=10.1371/journal.pone.0245941)
+  # as suggested by Carrie Holt at https://github.com/SOLV-Code/MetricsCOSEWIC/issues/15
+
+  tmp.vals <- longterm.vals
+  zero.idx <- tmp.vals == 0
+
+  tmp.vals[zero.idx] <- runif(sum(zero.idx,na.rm = TRUE),0, min(longterm.vals[!zero.idx],na.rm = TRUE))
+
+  recent.avg <- exp(mean(log(recent.vals), na.rm=FALSE))
+  longterm.avg <- exp(mean(log(tmp.vals), na.rm=TRUE))
+
+
 	}
 
 if(tolower(avg.type) == "median"){
