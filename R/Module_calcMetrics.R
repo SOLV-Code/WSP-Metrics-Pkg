@@ -208,11 +208,16 @@ if(tracing){print(yrs.use); print(trend.vec)}
 #                                   perc.change.bm = metric.bm$PercChange[1] , na.skip=FALSE,
 #                                   out.type = "short", mcmc.plots = FALSE)
 
+
+# NEW FEB 2021: Need at least half the data points before trying MCMC
+if(sum(!is.na(trend.vec)) < length(trend.vec/2) ){na.skip.use <- TRUE} # this results in NA outputs, but stops crashing
+if(sum(!is.na(trend.vec)) >= length(trend.vec/2) ){na.skip.use <- FALSE}
+
 pchange.mcmc <- calcPercChangeMCMC(vec.in = trend.vec,
                                method = "jags",
                                model.in = NULL, # this defaults to the BUGS code in the built in function trend.bugs.1()
                                perc.change.bm = -25,
-							    na.skip = FALSE,
+							    na.skip = na.skip.use,
                                out.type = "long",
                                mcmc.plots = FALSE,
                                convergence.check = FALSE, # ??Conv check crashes on ts() ??? -> change to Rhat check
