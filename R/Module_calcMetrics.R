@@ -203,6 +203,7 @@ if(slope.specs$slope.smooth == FALSE){ trend.vec <- log(series.in[yrs.in %in% yr
 
 if(tracing){print(yrs.use); print(trend.vec)}
 
+
 #old fn call
 #pchange.mcmc <- calcPercChangeMCMC(vec.in= vec.use,model.in = trend.bugs.1 ,
 #                                   perc.change.bm = metric.bm$PercChange[1] , na.skip=FALSE,
@@ -212,6 +213,19 @@ if(tracing){print(yrs.use); print(trend.vec)}
 # NEW FEB 2021: Need at least half the data points before trying MCMC
 if(sum(!is.na(trend.vec)) < length(trend.vec/2) ){na.skip.use <- TRUE} # this results in NA outputs, but stops crashing
 if(sum(!is.na(trend.vec)) >= length(trend.vec/2) ){na.skip.use <- FALSE}
+
+# NEW FEB 2021: 
+# If any zeroes in the data, trend.vec contains -Inf, and it crashes below
+# using the strategy from Perry et al 2021 (https://journals.plos.org/plosone/article/comments?id=10.1371/journal.pone.0245941)
+# as suggested by Carrie Holt at https://github.com/SOLV-Code/MetricsCOSEWIC/issues/15
+# -> replacing  - inf with log(random number between 0 and half of min obs)
+
+  inf.idx <- !is.finite(trend.vec)
+  inf.idx[is.na(inf.idx)] <- FALSE
+  trend.vec[inf.idx] <- log(runif(sum(inf.idx,na.rm = TRUE),0.00000001, min(trend.vec[!inf.idx],na.rm = TRUE)/2))
+
+
+
 
 pchange.mcmc <- calcPercChangeMCMC(vec.in = trend.vec,
                                method = "jags",
