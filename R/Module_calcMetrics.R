@@ -23,10 +23,11 @@ calcMetrics <- function(  series.in, yrs.in, gen.in,
 							stk.label = "Stock",
 							species.label = "Species",
 							series.label = "DataVersion",
-							slope.specs = list(num.gen = 3, extra.yrs = 0,filter.sides=1,
+							slope.specs = list(num.gen = 3, extra.yrs = 0,filter.sides=1, slope.smooth=TRUE,
 										log.transform = TRUE, out.exp = TRUE,na.rm=FALSE),
 							avg.specs = list(avg.type = "geomean",recent.excl=FALSE,
-										min.lt.yrs =20,min.perc.yrs =20),
+												lt.smooth=TRUE, rel.avg.type="regular", 
+												min.lt.yrs =20,min.perc.yrs =20),
 							metric.bm =  list(RelAbd = c(NA,NA),  AbsAbd = c(1000,10000),
 										LongTrend = c(0.5,0.75),
 										PercChange = c(-25,-15),
@@ -35,6 +36,9 @@ calcMetrics <- function(  series.in, yrs.in, gen.in,
 							retro.start = NULL,
 							tracing = TRUE){
 
+
+#Note: Bronwyn MacDonald edits described at https://github.com/SOLV-Code/SOS-Data-Processing/issues/49
+# have been incorporated here (except for the special cyclic version, as per WG decision)
 
 # load packages
 require(tidyverse)
@@ -54,9 +58,11 @@ out.df <- expand.grid(species.label, stk.label,series.label,retro.yrs,metric.lab
 names(out.df) <- c("Species", "Stock","Label", "Year","Metric")
 out.df[val.cols] <- NA
 
+# STEP SMOOTH! 
 # create smoothed/transformed version of the series for slope calcs
 series.smoothed <- smoothSeries(series.in,gen = gen.in, filter.sides=slope.specs$filter.sides,
-            log.transform = slope.specs$log.transform, out.exp = slope.specs$out.exp,na.rm=slope.specs$na.rm)
+            log.transform = slope.specs$log.transform,
+            out.exp = slope.specs$out.exp,na.rm=slope.specs$na.rm)
 
 
 # start looping through years
@@ -76,14 +82,24 @@ if(tracing){
 #  also produces last gen avg (based on specs)
 # NOTE: uses the smoothed series
 
-lt.trend.out <- calcLongTermTrendSimple(vec.in=series.smoothed[yrs.in <= yr.do],gen.in = gen.in,
-                                        min.lt.yrs = avg.specs$min.lt.yrs,
-                                        avg.type = avg.specs$avg.type,
-                                        tracing=FALSE,
-                                        recent.excl = avg.specs$recent.excl)
+
+if(avg.specs$lt.smooth == TRUE) {lt.trend.out <- calcLongTermTrendSimple(vec.in=series.smoothed[yrs.in <= yr.do],gen.in = gen.in,
+                                                                        min.lt.yrs = avg.specs$min.lt.yrs,
+                                                                        avg.type = avg.specs$avg.type,
+                                                                        tracing=FALSE,
+                                                                        recent.excl = avg.specs$recent.excl)}
+
+if(avg.specs$lt.smooth == FALSE){ lt.trend.out <- calcLongTermTrendSimple(vec.in=series.in[yrs.in <= yr.do],gen.in = gen.in,
+                                                                         min.lt.yrs = avg.specs$min.lt.yrs,
+                                                                         avg.type = avg.specs$avg.type,
+                                                                         tracing=FALSE,
+                                                                         recent.excl = avg.specs$recent.excl)}
 
 out.df$Value[out.df$Year == yr.do & out.df$Metric == "LongTrend"] <- round(lt.trend.out$lt.trend/100,4)
 out.df[out.df$Year == yr.do & out.df$Metric == "LongTrend",c("LBM","UBM")] <- metric.bm$LongTrend
+
+
+
 
 
 # -----------------------------------------------------------
@@ -103,14 +119,39 @@ out.df[out.df$Year == yr.do & out.df$Metric == "Percentile",c("LBM","UBM")] <- m
 # -----------------------------------------------------------
 # CALCULATE RELATIVE ABUNDANCE  METRIC
 
-out.df$Value[out.df$Year == yr.do & out.df$Metric == "RelAbd"] <- round(lt.trend.out$recent.avg,4)
+# OLD VERSION: out.df$Value[out.df$Year == yr.do & out.df$Metric == "RelAbd"] <- round(lt.trend.out$recent.avg,4)
+
+# FIXED VERSION (excluding cyclic special cases):
+
+# We used the average of the last 4 years, not the average of the average of the last 4 years.
+if(avg.specs$rel.avg.type == "smoothed" & avg.specs$lt.smooth == TRUE){
+        out.df$Value[out.df$Year == yr.do & out.df$Metric == "RelAbd"] <- round(lt.trend.out$recent.avg,4)
+}
+
+if(avg.specs$rel.avg.type == "smoothed" & avg.specs$lt.smooth == FALSE) {
+  out.df$Value[out.df$Year == yr.do & out.df$Metric == "RelAbd"] <- round(calcLongTermTrendSimple(vec.in=series.smoothed[yrs.in <= yr.do],gen.in = gen.in,
+                                                                                                  min.lt.yrs = avg.specs$min.lt.yrs,
+                                                                                                  avg.type = avg.specs$avg.type,
+                                                                                                  tracing=FALSE, recent.excl = avg.specs$recent.excl)$recent.avg,4)
+                }
+
+if(avg.specs$rel.avg.type == "regular"){
+  out.df$Value[out.df$Year == yr.do & out.df$Metric == "RelAbd"] <- series.smoothed[yrs.in == yr.do]}
+
+
 
 # calculate  p25 and p75 for the BM if NA
-if(is.na(metric.bm$RelAbd[1])){lbm.use <- quantile(series.smoothed[yrs.in <= yr.do],probs = 0.25,na.rm=TRUE) }
-if(!is.na(metric.bm$RelAbd[1])){lbm.use <- metric.bm$RelAbd[1] }
-if(is.na(metric.bm$RelAbd[2])){ubm.use <- quantile(series.smoothed[yrs.in <= yr.do],probs = 0.75,na.rm=TRUE) }
-if(!is.na(metric.bm$RelAbd[2])){ubm.use <- metric.bm$RelAbd[2] }
+# # BMac edit - do not use the the p25 or p75 if no BM available, this should just be NA if not available
+#if(is.na(metric.bm$RelAbd[1])){lbm.use <- quantile(series.smoothed[yrs.in <= yr.do],probs = 0.25,na.rm=TRUE) }
+#if(!is.na(metric.bm$RelAbd[1])){lbm.use <- metric.bm$RelAbd[1] }
+#if(is.na(metric.bm$RelAbd[2])){ubm.use <- quantile(series.smoothed[yrs.in <= yr.do],probs = 0.75,na.rm=TRUE) }
+#if(!is.na(metric.bm$RelAbd[2])){ubm.use <- metric.bm$RelAbd[2] }
 
+if(!is.na(metric.bm$RelAbd[1])){lbm.use <- metric.bm$RelAbd[1]
+                                ubm.use <- metric.bm$RelAbd[2]
+                                }
+
+if(is.na(metric.bm$RelAbd[1])){lbm.use <- ubm.use <- NA }
 
 out.df[out.df$Year == yr.do & out.df$Metric == "RelAbd",c("LBM","UBM")] <- c(lbm.use,ubm.use)
 
@@ -119,8 +160,25 @@ out.df[out.df$Year == yr.do & out.df$Metric == "RelAbd",c("LBM","UBM")] <- c(lbm
 # -----------------------------------------------------------
 # CALCULATE ABSOLUTE ABUNDANCE METRIC
 
-out.df$Value[out.df$Year == yr.do & out.df$Metric == "AbsAbd"] <- round(lt.trend.out$recent.avg,4)
+if(avg.specs$rel.avg.type == "smoothed" & avg.specs$lt.smooth == TRUE){
+    out.df$Value[out.df$Year == yr.do & out.df$Metric == "AbsAbd"] <- round(lt.trend.out$recent.avg,4)
+      }
+
+if(avg.specs$rel.avg.type == "smoothed" & avg.specs$lt.smooth == FALSE){
+  out.df$Value[out.df$Year == yr.do & out.df$Metric == "RelAbd"] <- round(calcLongTermTrendSimple(vec.in=series.smoothed[yrs.in <= yr.do],gen.in = gen.in,
+                                                                                                  min.lt.yrs = avg.specs$min.lt.yrs,
+                                                                                                  avg.type = avg.specs$avg.type,
+                                                                                                  tracing=FALSE,
+                                                                                                    recent.excl = avg.specs$recent.excl)$recent.avg,4)
+        }
+
+  if(avg.specs$rel.avg.type == "regular"){
+  out.df$Value[out.df$Year == yr.do & out.df$Metric == "AbsAbd"] <- series.smoothed[yrs.in == yr.do]
+  }
+
+
 out.df[out.df$Year == yr.do & out.df$Metric == "AbsAbd",c("LBM","UBM")] <- metric.bm$AbsAbd
+
 
 
 # -----------------------------------------------------------
@@ -129,13 +187,56 @@ if(tracing){ print("starting Perc Change and Prob Decl -")}
 
 # get the last n gen (+ extra years if specified)
 yrs.use <- (yr.do - (slope.specs$extra.yrs -1 + gen.in*slope.specs$num.gen)) :  yr.do
-vec.use <- series.smoothed[yrs.in %in% yrs.use]
 
-if(tracing){print(yrs.use); print(vec.use)}
+# Add in smoothed or not! *BLM July 22 2020 ********************************
+# Added in log y/n GP Feb 2021
+# if out.exp =  TRUE, then the smoothed series was back-transformed from log space
+# and need to log-transform before trend calc, b/c
+# using logged = TRUE in the call to calcPercChangeMCMC() below
+if(slope.specs$slope.smooth == TRUE){ 
+						vec.use <- series.smoothed[yrs.in %in% yrs.use]
+							if(slope.specs$out.exp){trend.vec <- log(vec.use)}
+							if(!slope.specs$out.exp){trend.vec <- vec.use}
+							}
+							
+if(slope.specs$slope.smooth == FALSE){ trend.vec <- log(series.in[yrs.in %in% yrs.use])   }
 
-pchange.mcmc <- calcPercChangeMCMC(vec.in= vec.use,model.in = trend.bugs.1 ,
-                                   perc.change.bm = metric.bm$PercChange[1] , na.skip=FALSE,
-                                   out.type = "short", mcmc.plots = FALSE)
+if(tracing){print(yrs.use); print(trend.vec)}
+
+
+#old fn call
+#pchange.mcmc <- calcPercChangeMCMC(vec.in= vec.use,model.in = trend.bugs.1 ,
+#                                   perc.change.bm = metric.bm$PercChange[1] , na.skip=FALSE,
+#                                   out.type = "short", mcmc.plots = FALSE)
+
+
+# NEW FEB 2021: Need at least half the data points before trying MCMC
+if(sum(!is.na(trend.vec)) < length(trend.vec/2) ){na.skip.use <- TRUE} # this results in NA outputs, but stops crashing
+if(sum(!is.na(trend.vec)) >= length(trend.vec/2) ){na.skip.use <- FALSE}
+
+# NEW FEB 2021: 
+# If any zeroes in the data, trend.vec contains -Inf, and it crashes below
+# using the strategy from Perry et al 2021 (https://journals.plos.org/plosone/article/comments?id=10.1371/journal.pone.0245941)
+# as suggested by Carrie Holt at https://github.com/SOLV-Code/MetricsCOSEWIC/issues/15
+# -> replacing  - inf with log(random number between 0 and half of min obs)
+
+  inf.idx <- !is.finite(trend.vec)
+  inf.idx[is.na(inf.idx)] <- FALSE
+  trend.vec[inf.idx] <- log(runif(sum(inf.idx,na.rm = TRUE),0.00000001, min(trend.vec[!inf.idx],na.rm = TRUE)/2))
+
+
+
+
+pchange.mcmc <- calcPercChangeMCMC(vec.in = trend.vec,
+                               method = "jags",
+                               model.in = NULL, # this defaults to the BUGS code in the built in function trend.bugs.1()
+                               perc.change.bm = -25,
+							    na.skip = na.skip.use,
+                               out.type = "long",
+                               mcmc.plots = FALSE,
+                               convergence.check = FALSE, # ??Conv check crashes on ts() ??? -> change to Rhat check
+							   logged = TRUE
+                                )
 
 
 out.df$Value[out.df$Year == yr.do & out.df$Metric == "PercChange"] <- round(pchange.mcmc$pchange,4)

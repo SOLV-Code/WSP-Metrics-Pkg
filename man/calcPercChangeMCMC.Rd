@@ -6,18 +6,22 @@
 \usage{
 calcPercChangeMCMC(
   vec.in,
+  method = "jags",
   model.in = NULL,
   perc.change.bm = -25,
   na.skip = FALSE,
   out.type = "short",
   mcmc.plots = FALSE,
-  convergence.check = FALSE
+  convergence.check = FALSE,
+  logged = TRUE
 )
 }
 \arguments{
-\item{vec.in}{vector of raw numeric values}
+\item{vec.in}{vector with numeric values}
 
-\item{model.in}{if NULL, use the BUGS code in the built in function trend.bugs.1()}
+\item{method}{either "jags" (default), "rstanarm", or "rstan". For properties and discussion of strengths/limitations, refer to the \href{https://github.com/SOLV-Code/MetricsCOSEWIC/wiki/1-Probability-of-Decline:-Estimation-Methods}{MetricsCOSEWIC wiki}.}
+
+\item{model.in}{if NULL, use the built in functions for each method: trend.bugs.1() for jags, ETC}
 
 \item{perc.change.bm}{benchmark for Prob(Decl>BM), default = -25}
 
@@ -34,11 +38,13 @@ To get a plot of the model fit, run this function with out.type = "long",
 and then use plot.trend.fit().}
 
 \item{convergence.check}{if TRUE, do an automated convergence check}
+
+\item{logged}{if TRUE, then the input is already log-transformed, and the Perc Change is calculated on the exponentiated fitted values. Default is TRUE}
 }
 \description{
-Bayesian estimation of short-term trends, using MCMC in JAGS (replaces old WSP version based on PBSModelling and Metropolis algorithm)
+MCMC version of trend metric calculation
 This function calculates the percent change in abundances based on an exponential model of population decline, as per IUCN guidelines
-It esimates a distribution of percent declines over the period of the time-seris, and provides the probability of declines being greater than a specified threhold
+It estimates a distribution of percent declines over the period of the time-series, and provides the probability of declines being greater than a specified threhold
 }
 \keyword{MCMC,}
 \keyword{slope,}
