@@ -49,7 +49,7 @@ if(tolower(avg.type) == "geomean"){
   zero.idx <- tmp.vals == 0
   zero.idx[is.na(zero.idx)] <- FALSE
 
-  tmp.vals[zero.idx] <- runif(sum(zero.idx,na.rm = TRUE),0, min(longterm.vals[!zero.idx],na.rm = TRUE))
+  tmp.vals[zero.idx] <- runif(sum(zero.idx,na.rm = TRUE),0.00000001, min(longterm.vals[!zero.idx],na.rm = TRUE)/2)
 
   recent.avg <- exp(mean(log(recent.vals), na.rm=FALSE))
   longterm.avg <- exp(mean(log(tmp.vals), na.rm=TRUE))

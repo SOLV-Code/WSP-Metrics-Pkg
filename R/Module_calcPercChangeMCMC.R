@@ -29,7 +29,7 @@ calcPercChangeMCMC <-function(vec.in,method = "jags",model.in = NULL , perc.chan
 							){
 
   na.flag <- sum(is.na(vec.in)) > 0  & na.skip
-  if(na.flag){	out.list <- list(pchange = NA) }
+  if(na.flag){	out.list <- list(pchange = NA,probdecl = NA) }
 
 
 # if no NA  (left) in input
