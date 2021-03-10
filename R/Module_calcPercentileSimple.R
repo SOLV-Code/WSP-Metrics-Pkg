@@ -21,6 +21,7 @@
 calcPercentileSimple  <- function(vec.in,gen.in = 4,min.perc.yrs = 20, avg.type = "geomean", tracing=FALSE,
 							recent.excl = FALSE){
 
+print(avg.type)
 
 if(tracing){ print("vec.in ------"); print(vec.in)}
 
