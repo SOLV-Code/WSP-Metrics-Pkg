@@ -42,11 +42,11 @@ if(tracing){print(recent.vals); print(sample.vals )}
 #calculate recent avg (if any NA , get NA)
 if(tolower(avg.type) == "mean"){ 	recent.avg <- mean(recent.vals, na.rm=FALSE)}
 if(tolower(avg.type) == "geomean"){	recent.avg <- expm1(mean(log1p(recent.vals), na.rm=FALSE)) }
-if(tolower(avg.type) == "median"){median(recent.vals, na.rm=FALSE) }
+if(tolower(avg.type) == "median"){  recent.avg <- median(recent.vals, na.rm=FALSE) }
 
 # using the approach from here:
 #https://stats.stackexchange.com/questions/50080/estimate-quantile-of-value-in-a-vector
-
+print(recent.avg)
 perc.out <- ecdf(sample.vals)(recent.avg)
 
 } # end if have enough data
