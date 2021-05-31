@@ -26,7 +26,7 @@ calcMetrics <- function(  series.in, yrs.in, gen.in,
 							slope.specs = list(num.gen = 3, extra.yrs = 0,filter.sides=1, slope.smooth=TRUE,
 										log.transform = TRUE, out.exp = TRUE,na.rm=FALSE),
 							avg.specs = list(avg.type = "geomean",recent.excl=FALSE,
-												lt.smooth=TRUE, rel.avg.type="regular", 
+												lt.smooth=TRUE, rel.avg.type="regular",
 												min.lt.yrs =20,min.perc.yrs =20),
 							metric.bm =  list(RelAbd = c(NA,NA),  AbsAbd = c(1000,10000),
 										LongTrend = c(0.5,0.75),
@@ -58,7 +58,7 @@ out.df <- expand.grid(species.label, stk.label,series.label,retro.yrs,metric.lab
 names(out.df) <- c("Species", "Stock","Label", "Year","Metric")
 out.df[val.cols] <- NA
 
-# STEP SMOOTH! 
+# STEP SMOOTH!
 # create smoothed/transformed version of the series for slope calcs
 series.smoothed <- smoothSeries(series.in,gen = gen.in, filter.sides=slope.specs$filter.sides,
             log.transform = slope.specs$log.transform,
@@ -193,12 +193,12 @@ yrs.use <- (yr.do - (slope.specs$extra.yrs -1 + gen.in*slope.specs$num.gen)) :  
 # if out.exp =  TRUE, then the smoothed series was back-transformed from log space
 # and need to log-transform before trend calc, b/c
 # using logged = TRUE in the call to calcPercChangeMCMC() below
-if(slope.specs$slope.smooth == TRUE){ 
+if(slope.specs$slope.smooth == TRUE){
 						vec.use <- series.smoothed[yrs.in %in% yrs.use]
 							if(slope.specs$out.exp){trend.vec <- log(vec.use)}
 							if(!slope.specs$out.exp){trend.vec <- vec.use}
 							}
-							
+
 if(slope.specs$slope.smooth == FALSE){ trend.vec <- log(series.in[yrs.in %in% yrs.use])   }
 
 if(tracing){print(yrs.use); print(trend.vec)}
@@ -214,14 +214,18 @@ if(tracing){print(yrs.use); print(trend.vec)}
 if(sum(!is.na(trend.vec)) < length(trend.vec/2) ){na.skip.use <- TRUE} # this results in NA outputs, but stops crashing
 if(sum(!is.na(trend.vec)) >= length(trend.vec/2) ){na.skip.use <- FALSE}
 
-# NEW FEB 2021: 
+# NEW FEB 2021:
 # If any zeroes in the data, trend.vec contains -Inf, and it crashes below
 # using the strategy from Perry et al 2021 (https://journals.plos.org/plosone/article/comments?id=10.1371/journal.pone.0245941)
 # as suggested by Carrie Holt at https://github.com/SOLV-Code/MetricsCOSEWIC/issues/15
 # -> replacing  - inf with log(random number between 0 and half of min obs)
 
   inf.idx <- !is.finite(trend.vec)
-  inf.idx[is.na(inf.idx)] <- FALSE
+  inf.idx[is.na(trend.vec)] <- FALSE
+  # used to be   inf.idx[is.na(inf.idx)] <- FALSE
+  # fixed to address this issue: https://github.com/SOLV-Code/SOS-Data-Processing/issues/67
+  # the old way way filled in a bunch of small numbers for any missing years (e.g. beginning of retro)
+  # causing steeply increasing trend metrics.
   trend.vec[inf.idx] <- log(runif(sum(inf.idx,na.rm = TRUE),0.00000001, min(trend.vec[!inf.idx],na.rm = TRUE)/2))
 
 

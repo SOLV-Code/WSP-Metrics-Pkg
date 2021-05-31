@@ -83,8 +83,16 @@ setwd("WSP-Metrics-Pkg") # move back into pkg folder
 
 
 
+########################
+# testing NA fix
+
+test.vec <- c(1,2,3,4,5,NA,NA,-Inf,0,8,9)
+test.vec
 
 
+inf.idx <- !is.finite(test.vec)
+inf.idx
+inf.idx[is.na(inf.idx)] <- FALSE
 
 
 
