@@ -220,13 +220,20 @@ if(sum(!is.na(trend.vec)) >= length(trend.vec/2) ){na.skip.use <- FALSE}
 # as suggested by Carrie Holt at https://github.com/SOLV-Code/MetricsCOSEWIC/issues/15
 # -> replacing  - inf with log(random number between 0 and half of min obs)
 
+
   inf.idx <- !is.finite(trend.vec)
-  inf.idx[is.na(trend.vec)] <- FALSE
-  # used to be   inf.idx[is.na(inf.idx)] <- FALSE
+  zero.idx <- vec.use == 0
+  fix.idx <- inf.idx | zero.idx
+  fix.idx[is.na(fix.idx)] <- FALSE
+  trend.vec[fix.idx] <- log(runif(sum(fix.idx,na.rm = TRUE),0.00000001, min(trend.vec[!inf.idx],na.rm = TRUE)/2))
+  # used to be
+  # inf.idx <- !is.finite(trend.vec)
+  # inf.idx[is.na(inf.idx)] <- FALSE
+  # trend.vec[inf.idx] <- log(runif(sum(inf.idx,na.rm = TRUE),0.00000001, min(trend.vec[!inf.idx],na.rm = TRUE)/2))
   # fixed to address this issue: https://github.com/SOLV-Code/SOS-Data-Processing/issues/67
-  # the old way way filled in a bunch of small numbers for any missing years (e.g. beginning of retro)
+  # the old way way filled in a bunch of small numbers for any missing years (e.g. at beginning of retro for short series)
   # causing steeply increasing trend metrics.
-  trend.vec[inf.idx] <- log(runif(sum(inf.idx,na.rm = TRUE),0.00000001, min(trend.vec[!inf.idx],na.rm = TRUE)/2))
+
 
 
 
