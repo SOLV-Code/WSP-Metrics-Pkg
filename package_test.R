@@ -96,6 +96,44 @@ inf.idx[is.na(inf.idx)] <- FALSE
 
 
 
+######################
+# Testing calcMetrics()
+
+head(exampleData)
+
+yrs.vec <- 1:length(exampleData$Stock1) + 1979 # if your data doesn't have yrs, need to generate a yr vector
+
+plot(yrs.vec, exampleData$Stock1,type="o")
+
+
+
+test.out <- calcMetrics (  series.in = exampleData$Stock1 , # vector of values
+                          yrs.in  = yrs.vec,
+                          gen.in = 4, # avg generation time
+                          stk.label = "Stock 1", # used for labeling output
+                          species.label = "Species", # used for labeling output
+                          series.label = "DataVersion", # used for labeling output
+                          slope.specs = list(num.gen = 3, extra.yrs = 0,filter.sides=1, slope.smooth=TRUE,
+                                             log.transform = TRUE, out.exp = TRUE,na.rm=FALSE),
+                          avg.specs = list(avg.type = "geomean",recent.excl=FALSE,
+                                           lt.smooth=TRUE, rel.avg.type="regular",
+                                           min.lt.yrs =20,min.perc.yrs =20),
+                          metric.bm =  list(RelAbd = c(30,50),   # set these at arbitrary numbers for the illustration
+                                            AbsAbd = c(1000,10000),
+                                            LongTrend = c(0.5,0.75),
+                                            PercChange = c(-25,-15),
+                                            ProbDeclBelowLBM = c(NA,NA),
+                                            Percentile = c(0.25,0.5)),
+                          retro.start = NULL,
+                          tracing = TRUE)
+
+
+
+head(test.out)
+
+
+
+
 
 
 
