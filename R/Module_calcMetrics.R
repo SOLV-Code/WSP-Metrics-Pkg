@@ -222,7 +222,7 @@ if(sum(!is.na(trend.vec)) >= length(trend.vec/2) ){na.skip.use <- FALSE}
 
 
   inf.idx <- !is.finite(trend.vec)
-  zero.idx <- vec.use == 0
+  zero.idx <- trend.vec == 0
   fix.idx <- inf.idx | zero.idx
   fix.idx[is.na(fix.idx)] <- FALSE
   trend.vec[fix.idx] <- log(runif(sum(fix.idx,na.rm = TRUE),0.00000001, min(trend.vec[!inf.idx],na.rm = TRUE)/2))
