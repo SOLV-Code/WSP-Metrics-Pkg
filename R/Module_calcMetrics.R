@@ -211,21 +211,15 @@ if(tracing){print(yrs.use); print(trend.vec)}
 
 
 # NEW FEB 2021: Need at least half the data points before trying MCMC
-if(sum(!is.na(trend.vec)) < length(trend.vec/2) ){na.skip.use <- TRUE} # this results in NA outputs, but stops crashing
-if(sum(!is.na(trend.vec)) >= length(trend.vec/2) ){na.skip.use <- FALSE}
+# COMMENTED OUT AUG 2024: This was not doing anything because of the infill below, now moved it to be part of the infill criterion -> do not infill with random low number if more than 1/3 of records are missing
+#if(sum(!is.na(trend.vec)) < length(trend.vec/2) ){na.skip.use <- TRUE} # this results in NA outputs, but stops crashing
+#if(sum(!is.na(trend.vec)) >= length(trend.vec/2) ){na.skip.use <- FALSE}
 
 # NEW FEB 2021:
 # If any zeroes in the data, trend.vec contains -Inf, and it crashes below
 # using the strategy from Perry et al 2021 (https://journals.plos.org/plosone/article/comments?id=10.1371/journal.pone.0245941)
 # as suggested by Carrie Holt at https://github.com/SOLV-Code/MetricsCOSEWIC/issues/15
 # -> replacing  - inf with log(random number between 0 and half of min obs)
-
-
-  inf.idx <- !is.finite(trend.vec)
-  zero.idx <- trend.vec == 0  # FIXED THIS  AUG 2024: used to be vec.use, which crashed if smoothing = FALSE above
-  fix.idx <- inf.idx | zero.idx
-  fix.idx[is.na(fix.idx)] <- FALSE
-  trend.vec[fix.idx] <- log(runif(sum(fix.idx,na.rm = TRUE),0.00000001, min(trend.vec[!fix.idx],na.rm = TRUE)/2))
   # used to be
   # inf.idx <- !is.finite(trend.vec)
   # inf.idx[is.na(inf.idx)] <- FALSE
@@ -234,15 +228,39 @@ if(sum(!is.na(trend.vec)) >= length(trend.vec/2) ){na.skip.use <- FALSE}
   # the old way way filled in a bunch of small numbers for any missing years (e.g. at beginning of retro for short series)
   # causing steeply increasing trend metrics.
 
+# AUG 2024 FIX: 
+# Only fill in any NA/0 AFTER THE FIRST FINITE LOG(Spn) IN THE SERIES.
+# Only fill in 1/3 or less of data, changed na.skip argument below to TRUE (rather than how was done before, see above)
+# NEW BEHAVIOUR: 
+# - Fill in any NA/0 after the first data point and calculate slope, unless too many data points are missing.
+# - If too many data points are missing, leave the NAs, and the call to calcPErcCHangeMCMC will na.skip=TRUE to give 
+# properly formatted output with NA values for the slope.
 
+# !is.finite catches NA and -Inf; -Inf comes from log(0)
+finite.pos <- which(is.finite(trend.vec))
+nonfinite.pos <- which(!is.finite(trend.vec))
+first.finite.pos <- min(finite.pos)
+last.pos <- length(trend.vec)
+prop.finite <- length(finite.pos)/length(trend.vec)
 
+if(prop.finite >= 2/3){ 
+  fix.pos <- nonfinite.pos[nonfinite.pos > first.finite.pos]
+  trend.vec[fix.pos] <- runif(length(fix.pos),0.00000001, min(trend.vec[finite.pos])/2)  # removed log (already feeding in log values)
+}
+
+if(prop.finite < 2/3){ trend.vec[nonfinite.pos] <- NA}
+
+  
+  
+  if(tracing){print("trend.vec after 0,NA fixing"); print(trend.vec)}
+  
 
 
 pchange.mcmc <- calcPercChangeMCMC(vec.in = trend.vec,
                                method = "jags",
                                model.in = NULL, # this defaults to the BUGS code in the built in function trend.bugs.1()
                                perc.change.bm = -25,
-							    na.skip = na.skip.use,
+							    na.skip = TRUE,
                                out.type = "long",
                                mcmc.plots = FALSE,
                                convergence.check = FALSE, # ??Conv check crashes on ts() ??? -> change to Rhat check
