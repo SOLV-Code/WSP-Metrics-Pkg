@@ -249,9 +249,10 @@ nonfinite.pos <- which(!is.finite(trend.vec))
 finite.pos <- which(is.finite(trend.vec))
 
 first.finite.pos <- min(finite.pos)
+last.finite.pos <- max(finite.pos)
 zero.pos <- which(trend.vec == 0)
 
-fix.pos <- nonfinite.pos[nonfinite.pos > first.finite.pos]
+fix.pos <- nonfinite.pos[nonfinite.pos > first.finite.pos & nonfinite.pos < last.finite.pos]
 nonzero.min <- min(trend.vec[setdiff(finite.pos,zero.pos)]) # calc min after excluding zeroes
 trend.vec[fix.pos] <- runif(length(fix.pos),0.00000001, nonzero.min/2)  # removed log (already feeding in log values)
 }
