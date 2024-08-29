@@ -243,10 +243,11 @@ if(tracing){print(yrs.use); print(trend.vec)}
 
 prop.finite <- sum(is.finite(trend.vec))/length(trend.vec)
 
-if(prop.finite >= 2/3){ 
 
-finite.pos <- which(is.finite(trend.vec))
+if(prop.finite >= 2/3){ 
 nonfinite.pos <- which(!is.finite(trend.vec))
+finite.pos <- which(is.finite(trend.vec))
+
 first.finite.pos <- min(finite.pos)
 zero.pos <- which(trend.vec == 0)
 
@@ -255,7 +256,10 @@ nonzero.min <- min(trend.vec[setdiff(finite.pos,zero.pos)]) # calc min after exc
 trend.vec[fix.pos] <- runif(length(fix.pos),0.00000001, nonzero.min/2)  # removed log (already feeding in log values)
 }
 
-if(prop.finite < 2/3){ trend.vec[nonfinite.pos] <- NA}
+if(prop.finite < 2/3){ 
+nonfinite.pos <- which(!is.finite(trend.vec))
+trend.vec[nonfinite.pos] <- NA
+}
 
   
   
