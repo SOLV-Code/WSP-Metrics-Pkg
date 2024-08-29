@@ -237,22 +237,24 @@ if(tracing){print(yrs.use); print(trend.vec)}
 # properly formatted output with NA values for the slope.
 
 # !is.finite catches NA and -Inf; -Inf comes from log(0)
+
+prop.finite <- sum(is.finite(trend.vec))/length(trend.vec)
+
+if(prop.finite >= 2/3){ 
+
 finite.pos <- which(is.finite(trend.vec))
 nonfinite.pos <- which(!is.finite(trend.vec))
 first.finite.pos <- min(finite.pos)
-last.pos <- length(trend.vec)
-prop.finite <- length(finite.pos)/length(trend.vec)
 
-if(prop.finite >= 2/3){ 
-  fix.pos <- nonfinite.pos[nonfinite.pos > first.finite.pos]
-  trend.vec[fix.pos] <- runif(length(fix.pos),0.00000001, min(trend.vec[finite.pos])/2)  # removed log (already feeding in log values)
+fix.pos <- nonfinite.pos[nonfinite.pos > first.finite.pos]
+trend.vec[fix.pos] <- runif(length(fix.pos),0.00000001, min(trend.vec[finite.pos])/2)  # removed log (already feeding in log values)
 }
 
 if(prop.finite < 2/3){ trend.vec[nonfinite.pos] <- NA}
 
   
   
-  if(tracing){print("trend.vec after 0,NA fixing"); print(trend.vec)}
+if(tracing){print("trend.vec after 0,NA fixing"); print(trend.vec)}
   
 
 
