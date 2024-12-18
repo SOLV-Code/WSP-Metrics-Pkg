@@ -1,13 +1,48 @@
-## Code to Calculate Status Metrics under *Canada's Wild Salmon Policy* (WSP)
+## Calculate and use metrics for status assessments under *Canada's Wild Salmon Policy* (WSP)
 
 
-### Disclaimer
+### Introduction
 
-*This package is under development. Functions will change rapidly and substantially.
-Do not use these if you are not part of the development team!*
+This package includes functions to calculate the standard status metrics originally defined by , and further refined in subsequent test cases and additional explorations . 
+
+
+### Contact
+
+For questions, comments, or suggestions, please contact 
 
 * Dr. Carrie Holt (Project Lead, Carrie.Holt"AT"dfo-mpo.gc.ca)
 * Gottfried Pestal (Developer, gpestal"AT"solv.ca)
+
+or start a discussion thread **here (LINK)**
+
+
+### Package Citation
+
+If you use this package in your work, please cite it as follows:
+
+*Holt C, Pestal G, MacDonald B, and Grant S (2024) WSPMetrics: Calculate and use metrics for status assessments under Canada's Wild Salmon Policy (WSP). R package version 1.0. https://github.com/Pacific-salmon-assess/WSP-Metrics-Pkg.*
+
+
+### Key References 
+
+#### Standard WSP Metrics
+
+Holt, C., Cass, A., Holtby, B., and Riddell, B. 2009. [Indicators of status and benchmarks for conservation units in Canada’s Wild Salmon Policy](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/339096.pdf). DFO Can. Sci. Advis. Sec. Res. Doc. 2009/058. viii + 74 p.
+
+
+
+#### Completed WSP Status assessments
+
+
+
+
+#### Rapid Status Decision Tree
+
+
+
+
+
+
 
 
 ### Install
@@ -24,9 +59,6 @@ library(WSPMetrics)
 **Note: If you want to use the MCMC-based functions, you also need to install [JAGS](http://mcmc-jags.sourceforge.net/).**
 
 ### WSP Status Metrics
-
-This package includes functions to calculate the metrics originally defined by Holt et al. (2009), and further refined in subsequent test cases and additional explorations. 
-
 
 The WSP metrics are designed to capture different considerations related to *status*, and have been used *in combination* to develop *integrated status designations*. Below is a brief overview with general definitions. For more detail about these metrics, alternative calculation approaches, and their use in formal status asessments, go to the [WSP Metrics wiki](https://github.com/SOLV-Code/MetricsTest/wiki). 
 
