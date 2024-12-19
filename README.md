@@ -1,12 +1,19 @@
 # Calculate and use metrics for status assessments under *Canada's Wild Salmon Policy* (WSP)
 
 
+* [Introduction](#Introduction)
+* [Background: WSP Status Metrics](#Background: WSP-Status-Metrics)
+* [Background: Rapid Status Decision Tree](#Background:-Rapid-Status-Decision-Tree)
+* [Install](#Install)
+* [Illustrations](#)
+* [](#)
+* [](#)
+* [References](#References)
+
 ## Introduction
 
 This package includes functions to calculate the standard status metrics originally defined by Holt et al. 2009, and further refined in subsequent test cases and additional explorations. The package also 
 
-
-## Contact
 
 For questions, comments, or suggestions, please contact 
 
@@ -15,50 +22,27 @@ For questions, comments, or suggestions, please contact
 
 or start a discussion thread **here (LINK)**
 
-
-## Package Citation
-
 If you use this package in your work, please cite it as follows:
 
 *Holt C, Pestal G, MacDonald B, and Grant S (2024) WSPMetrics: Calculate and use metrics for status assessments under Canada's Wild Salmon Policy (WSP). R package version 1.0. https://github.com/Pacific-salmon-assess/WSP-Metrics-Pkg.*
 
 
-## Key References 
+## Background: WSP Status Metrics
 
-### Standard WSP Metrics
-
-Holt, C., Cass, A., Holtby, B., and Riddell, B. 2009. [Indicators of status and benchmarks for conservation units in Canada’s Wild Salmon Policy](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/339096.pdf). DFO Can. Sci. Advis. Sec. Res. Doc. 2009/058. viii + 74 p.
-
-Holt, C.A. 2012. [Identifying benchmarks and assessing status of CUs under the Wild Salmon Policy: converging on consistent methods. Summary of progress meeting](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/348218.pdf). Can. Tech. Rep. Fish. Aquat. Sci. 3019: v + 23.
-
-Holt, C.A., and Ogden, A. 2013. [Software for assessing status of Conservation Unit under Canada’s Wild Salmon Policy: instructional manual](https://publications.gc.ca/collections/collection_2014/mpo-dfo/Fs97-6-3058-eng.pdf). Can. Tech. Rep. Fish. Aquat. Sci. 3058.
-
-Holt, C.A., Davis, B., Dobson, D., Godbout, L., Luedke, W., Tadey, J., and Van Will, P. 2018. [Evaluating Benchmarks of Biological Status for Data-limited Conservation Units of Pacific Salmon, Focusing on Chum Salmon in Southern BC](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/40759386.pdf). DFO Can. Sci. Advis. Sec. Res. Doc. 2018/011. ix + 77 p.
+The WSP metrics are designed to capture different considerations related to *status*, and have been used *in combination* to develop *integrated status designations*. Below is a brief overview with general definitions. For more detail about these metrics, alternative calculation approaches, and their use in formal status asessments, see the [References](#References). 
 
 
-### Completed WSP Status assessments
+**Metric** | **General Definition** | **Variations** | **Function** 
+-- | -- | -- | --
+Long-Term Trend | Recent Avg / Long-term Avg |  geometric mean vs. arithmetic mean |  *calcLongTermTrendSimple()* for a single vector. *calcLongTermTrend()* for a data frame with Years x Stocks (includes retrospective calculations).
+Percent Change  | change over n generations | alternative smoothing (log, gen avg), time window (n gen, n gen +1) | *calcPercChangeSimple()* for a single vector of raw values. *calcPercChange()* for a data frame with Years x Stocks (includes retrospective calculations).
+Probability of Decline | Prob(PercChange> X%) | alternative smoothing (log, gen avg), time window (n gen, n gen +1) |   *calcPercChangeSimple()* for regression based calculation in a single vector. *calcPercChange()* for a data frame with Years x Stocks (includes retrospective calculations). *calcPercChangeMCMC()* for a Bayesian probability (based on posterior distribution of regression slopes) calculated on a single vector of raw values.
+Relative Abundance - SR-Based BM| Recent Avg compared to biological benchmarks (Sgen, 80%Smsy) | geometric mean vs. arithmetic mean, alternative benchmark estimate approaches | first step will be to integrate a subroutine *calcRickerSgen* that converts Ricker parameters to benchmark estimates. For long-term, consider building a larger module *calcRelAbdBM()* that does the model fitting as well.
+Relative Abd - Percentile BM| Recent Avg compared to user-specified %iles | geometric mean vs. arithmetic mean | *calcPercentileSimple()* for a single vector. NOTE: This function only calculates the percentile value. It is the *calcMetrics()* wrapper function that compares this value to user-specified benchmarks and assigns a status category. [Holt et al. (2018)](https://www.dfo-mpo.gc.ca/csas-sccs/Publications/ResDocs-DocRech/2018/2018_011-eng.html) recommend lower and upper percentile-based status benchmarks at the 25th and 50th percentiles of observed spawner abundances for data-limited conservation units of Chum Salmon when productivity is moderate to high (>2.5 recruits/spawner) and harvest rates are low to moderate (≤40%).  [Holt et al. (2018)](https://www.dfo-mpo.gc.ca/csas-sccs/Publications/ResDocs-DocRech/2018/2018_011-eng.html) suggest further evaluation of percentile benchmarks and the consideration of alternatives when productivity is expected to be low and/or harvest rates high. The function *calcMetrics()* uses 0.25 and 0.50 as the default benchmarks for the percentiles.
 
-DFO. 2012. [Integrated biological status of Fraser River sockeye salmon (*Oncorhynchus nerka*) under the Wild Salmon Policy](http://www.dfo-mpo.gc.ca/csas-sccs/Publications/SAR-AS/2012/2012_056-eng.html). Can. Sci. Advis. Sec. Sci. Advis. Rep. 2012/056: 13 pp. 
+## Background: Rapid Status Decision Tree
 
-Grant, S.C.H., and Pestal, G. 2013. [Integrated biological status assessments under the Wild Salmon Policy using standardized metrics and expert judgement: Fraser River sockeye salmon (*Oncorhynchus nerka*) case studies](https://waves-vagues.dfo-mpo.gc.ca/Library/349637.pdf). Can. Sci. Advis. Sec. Res. Doc. 2012/106: v + 132 pp. 
-
-DFO. 2015. [Wild Salmon Policy status assessment for conservation units of Interior Fraser River coho (*Oncorhynchus kisutch*)](https://waves-vagues.dfo-mpo.gc.ca/Library/364851.pdf). Can. Sci. Advis. Sec. Sci. Advis. Rep. 2015/022: 12 pp. 
-
-DFO. 2016. [Integrated biological status of southern British Columbia Chinook salmon (*Oncorhynchus tshawytscha*) under the Wild Salmon Policy](https://waves-vagues.dfo-mpo.gc.ca/Library/40595419.pdf). Can. Sci. Advis. Sec. Sci. Advis. Rep. 2016/042: 15 pp. 
-
-DFO. 2018. [The 2017 Fraser Sockeye salmon (*Oncorhynchus nerka*) integrated biological status re-assessments under the Wild Salmon Policy](http://waves-vagues.dfo-mpo.gc.ca/Library/40712163.pdf). Can. Sci. Advis. Sec. Sci. Advis. Rep. 2018/017: 17 pp. 
-
-Grant, S.C.H., Holt, C.A., Pestal, G., Davis, B.M., and MacDonald, B.L. 2020. [The 2017 Fraser Sockeye salmon (*Oncorhynchus nerka*) integrated biological status re-assessments under the Wild Salmon Policy using standardized metrics and expert judgement](http://www.dfo-mpo.gc.ca/csas-sccs/Publications/ResDocs-DocRech/2020/2020_038-eng.pdf). Can. Sci. Advis. Sec. Res. Doc. 2020/038: vii+ 211. 
-
-
-### Rapid Status Decision Tree
-
-DFO. 2024. [Rapid status approximations for Pacific salmon derived from integrated status assessments under DFO’s Wild Salmon Policy](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41207890.pdf). CSAS Sci. Resp. 2024/004: 42 p. 
-
-Pestal, G., MacDonald, B.L., Grant, S.C.H., and Holt, C.A. 2023. [State of The Salmon: rapid status assessment approach for Pacific salmon under Canada’s Wild Salmon Policy](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41207890.pdf). Can. Tech. Rep. Fish. Aquat. Sci. 3570: xiv + 200 p. 
-
-
-
+INSERT TEXT
 
 ## Install
 
@@ -73,21 +57,11 @@ library(WSPMetrics)
 
 **Note: If you want to use the MCMC-based functions, you also need to install [JAGS](http://mcmc-jags.sourceforge.net/).**
 
-## WSP Status Metrics
-
-The WSP metrics are designed to capture different considerations related to *status*, and have been used *in combination* to develop *integrated status designations*. Below is a brief overview with general definitions. For more detail about these metrics, alternative calculation approaches, and their use in formal status asessments, go to the [WSP Metrics wiki](https://github.com/SOLV-Code/MetricsTest/wiki). 
 
 
-**Metric** | **General Definition** | **Variations** | **Function** 
--- | -- | -- | --
-Long-Term Trend | Recent Avg / Long-term Avg |  geometric mean vs. arithmetic mean |  *calcLongTermTrendSimple()* for a single vector. *calcLongTermTrend()* for a data frame with Years x Stocks (includes retrospective calculations).
-Percent Change  | change over n generations | alternative smoothing (log, gen avg), time window (n gen, n gen +1) | *calcPercChangeSimple()* for a single vector of raw values. *calcPercChange()* for a data frame with Years x Stocks (includes retrospective calculations).
-Probability of Decline | Prob(PercChange> X%) | alternative smoothing (log, gen avg), time window (n gen, n gen +1) |   *calcPercChangeSimple()* for regression based calculation in a single vector. *calcPercChange()* for a data frame with Years x Stocks (includes retrospective calculations). *calcPercChangeMCMC()* for a Bayesian probability (based on posterior distribution of regression slopes) calculated on a single vector of raw values.
-Relative Abundance - SR-Based BM| Recent Avg compared to biological benchmarks (Sgen, 80%Smsy) | geometric mean vs. arithmetic mean, alternative benchmark estimate approaches | first step will be to integrate a subroutine *calcRickerSgen* that converts Ricker parameters to benchmark estimates. For long-term, consider building a larger module *calcRelAbdBM()* that does the model fitting as well.
-Relative Abd - Percentile BM| Recent Avg compared to user-specified %iles | geometric mean vs. arithmetic mean | *calcPercentileSimple()* for a single vector. NOTE: This function only calculates the percentile value. It is the *calcMetrics()* wrapper function that compares this value to user-specified benchmarks and assigns a status category. [Holt et al. (2018)](https://www.dfo-mpo.gc.ca/csas-sccs/Publications/ResDocs-DocRech/2018/2018_011-eng.html) recommend lower and upper percentile-based status benchmarks at the 25th and 50th percentiles of observed spawner abundances for data-limited conservation units of Chum Salmon when productivity is moderate to high (>2.5 recruits/spawner) and harvest rates are low to moderate (≤40%).  [Holt et al. (2018)](https://www.dfo-mpo.gc.ca/csas-sccs/Publications/ResDocs-DocRech/2018/2018_011-eng.html) suggest further evaluation of percentile benchmarks and the consideration of alternatives when productivity is expected to be low and/or harvest rates high. The function *calcMetrics()* uses 0.25 and 0.50 as the default benchmarks for the percentiles.
+## Illustrations
 
-
-## Illustration
+### Illustration of Individual Metric Functions
 
 First install the package as per above.
 
@@ -146,7 +120,7 @@ slope.mcmc.fit$summary
 
 
 
-# OVERALL WRAPPER FUNCTION
+### Illustration of Overall Wrapper Function for Metrics
 
 The *calcMetrics()* function takes a time series and applies the individual metric calculations, with user-specified settings, to calculate a full suite of outputs (including retrospective calculation of metrics)
 
@@ -198,12 +172,50 @@ test.out <- calcMetrics (  series.in = exampleData$Stock1 , # vector of values
 head(test.out)
 
 
-
-
-
-
-
 ```
 
 
+### Illustration of Rapid Status Decision Tree Functions
+
+[This repository](https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples) has
+worked examples of the full workflow from metric calculations to status dashboards, using all the functions from this package.
+
+The functions are:
+
+**LIST**
+
+
+## References 
+
+### Standard WSP Metrics
+
+Holt, C., Cass, A., Holtby, B., and Riddell, B. 2009. [Indicators of status and benchmarks for conservation units in Canada’s Wild Salmon Policy](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/339096.pdf). DFO Can. Sci. Advis. Sec. Res. Doc. 2009/058. viii + 74 p.
+
+Holt, C.A. 2012. [Identifying benchmarks and assessing status of CUs under the Wild Salmon Policy: converging on consistent methods. Summary of progress meeting](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/348218.pdf). Can. Tech. Rep. Fish. Aquat. Sci. 3019: v + 23.
+
+Holt, C.A., and Ogden, A. 2013. [Software for assessing status of Conservation Unit under Canada’s Wild Salmon Policy: instructional manual](https://publications.gc.ca/collections/collection_2014/mpo-dfo/Fs97-6-3058-eng.pdf). Can. Tech. Rep. Fish. Aquat. Sci. 3058.
+
+Holt, C.A., Davis, B., Dobson, D., Godbout, L., Luedke, W., Tadey, J., and Van Will, P. 2018. [Evaluating Benchmarks of Biological Status for Data-limited Conservation Units of Pacific Salmon, Focusing on Chum Salmon in Southern BC](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/40759386.pdf). DFO Can. Sci. Advis. Sec. Res. Doc. 2018/011. ix + 77 p.
+
+
+### Completed WSP Status assessments
+
+DFO. 2012. [Integrated biological status of Fraser River sockeye salmon (*Oncorhynchus nerka*) under the Wild Salmon Policy](http://www.dfo-mpo.gc.ca/csas-sccs/Publications/SAR-AS/2012/2012_056-eng.html). Can. Sci. Advis. Sec. Sci. Advis. Rep. 2012/056: 13 pp. 
+
+Grant, S.C.H., and Pestal, G. 2013. [Integrated biological status assessments under the Wild Salmon Policy using standardized metrics and expert judgement: Fraser River sockeye salmon (*Oncorhynchus nerka*) case studies](https://waves-vagues.dfo-mpo.gc.ca/Library/349637.pdf). Can. Sci. Advis. Sec. Res. Doc. 2012/106: v + 132 pp. 
+
+DFO. 2015. [Wild Salmon Policy status assessment for conservation units of Interior Fraser River coho (*Oncorhynchus kisutch*)](https://waves-vagues.dfo-mpo.gc.ca/Library/364851.pdf). Can. Sci. Advis. Sec. Sci. Advis. Rep. 2015/022: 12 pp. 
+
+DFO. 2016. [Integrated biological status of southern British Columbia Chinook salmon (*Oncorhynchus tshawytscha*) under the Wild Salmon Policy](https://waves-vagues.dfo-mpo.gc.ca/Library/40595419.pdf). Can. Sci. Advis. Sec. Sci. Advis. Rep. 2016/042: 15 pp. 
+
+DFO. 2018. [The 2017 Fraser Sockeye salmon (*Oncorhynchus nerka*) integrated biological status re-assessments under the Wild Salmon Policy](http://waves-vagues.dfo-mpo.gc.ca/Library/40712163.pdf). Can. Sci. Advis. Sec. Sci. Advis. Rep. 2018/017: 17 pp. 
+
+Grant, S.C.H., Holt, C.A., Pestal, G., Davis, B.M., and MacDonald, B.L. 2020. [The 2017 Fraser Sockeye salmon (*Oncorhynchus nerka*) integrated biological status re-assessments under the Wild Salmon Policy using standardized metrics and expert judgement](http://www.dfo-mpo.gc.ca/csas-sccs/Publications/ResDocs-DocRech/2020/2020_038-eng.pdf). Can. Sci. Advis. Sec. Res. Doc. 2020/038: vii+ 211. 
+
+
+### Rapid Status Decision Tree
+
+DFO. 2024. [Rapid status approximations for Pacific salmon derived from integrated status assessments under DFO’s Wild Salmon Policy](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41207890.pdf). CSAS Sci. Resp. 2024/004: 42 p. 
+
+Pestal, G., MacDonald, B.L., Grant, S.C.H., and Holt, C.A. 2023. [State of The Salmon: rapid status assessment approach for Pacific salmon under Canada’s Wild Salmon Policy](https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/41207890.pdf). Can. Tech. Rep. Fish. Aquat. Sci. 3570: xiv + 200 p. 
 
