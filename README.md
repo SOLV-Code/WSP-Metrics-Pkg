@@ -17,7 +17,7 @@ For questions, comments, or suggestions, please contact
 * Dr. Carrie Holt (Project Lead, Carrie.Holt"AT"dfo-mpo.gc.ca)
 * Gottfried Pestal (Developer, gpestal"AT"solv.ca)
 
-or start a discussion thread **here (LINK)**
+or start a discussion thread [here](https://github.com/Pacific-salmon-assess/WSP-Metrics-Pkg/issues).
 
 If you use this package in your work, please cite it as follows:
 
@@ -176,13 +176,13 @@ head(test.out)
 
 ### Illustration of Rapid Status Decision Tree Functions
 
-[This repository](https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples) has
-worked examples of the full workflow from metric calculations to status dashboards, using all the functions from this package.
-
 The functions are:
 
-**LIST**
+* *applyRapidStatus()*: function that applies the rapid status decision tree to a data set of WSP metrics generated with *calcMetrics()*
+* **add plotting functions once they are included**
 
+[This repository](https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples) has
+worked examples of the full workflow from metric calculations to status dashboards, using all the functions from this package.
 
 ## References 
 
