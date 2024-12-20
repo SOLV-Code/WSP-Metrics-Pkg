@@ -2282,9 +2282,3 @@ return(p.out)
 }
 
 
-
-####################
-# IDENTICAL REPLICATE WITH NEW NAME
-
-#renaming the function
-rapid_status <- synoptic

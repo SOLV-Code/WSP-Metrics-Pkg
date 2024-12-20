@@ -1,6 +1,6 @@
 Package: WSPMetrics
 Type: Package
-Title:  WSPMetrics Package: R package to calculate and use metrics for status assessments under Canada's Wild Salmon Policy (WSP)
+Title: WSPMetrics Package: R package to calculate and use metrics for status assessments under Canada's Wild Salmon Policy (WSP)
 Version: 1.0
 Author: Carrie Holt, Gottfried Pestal 
 Maintainer: The package maintainer <carrie.holt@dfo-mpo.gc.ca>
@@ -13,5 +13,4 @@ SystemRequirements:
 Suggestions:
 VignetteBuilder: knitr
 URL: https://github.com/Pacific-salmon-assess/WSP-Metrics-Pkg
-RoxygenNote: 7.1.1
-
+RoxygenNote: 7.2.3
