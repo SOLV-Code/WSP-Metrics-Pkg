@@ -9,7 +9,7 @@
 
 ## Introduction
 
-This package includes functions to calculate the standard status metrics originally defined by Holt et al. 2009, and further refined in subsequent test cases and additional explorations. The package also includes functions for using the resulting metrics in a status assessment (apply rapid status decision tree, generate dashboards).
+This package includes functions to calculate the standard status metrics originally defined by Holt et al. 2009, and further refined in subsequent test cases and additional explorations ([References](#References)). The package also includes functions for using the resulting metrics in a status assessment (apply rapid status decision tree, generate dashboards).
 
 
 For questions, comments, or suggestions, please contact 
@@ -41,7 +41,7 @@ Relative Abd - Percentile BM| Recent Avg compared to user-specified %iles | geom
 
 ### Rapid Status Decision Tree
 
-**INSERT TEXT**
+Pestal et al. (2024)developed a decision tree that captures how experts in large-scale workshops interpreted the individual status metrics to determine an overall status for each CU. The tree works through a series criteria based on the standard status metrics and produces a Red/Amber/Green designation. For details, see the [References](#References).
 
 ## Install
 
