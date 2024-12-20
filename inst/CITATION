@@ -1,0 +1,11 @@
+citHeader("To cite WSPMetrics in publications please use:")
+
+# Based on sdmTMB, DESCRIPTION approach wouldn't include a year.
+bibentry(
+  bibtype = "misc",
+  title = "WSPMetrics: Calculate and use metrics for status assessments under Canada's Wild Salmon Policy (WSP). R package version 1.0",
+  author =
+    "Holt C, Pestal G, MacDonald B, and Grant S",
+  url = "https://github.com/Pacific-salmon-assess/WSP-Metrics-Pkg",
+  year = "2024"
+)
