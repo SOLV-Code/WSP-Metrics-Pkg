@@ -15,9 +15,8 @@ calcMetrics(
     log.transform = TRUE, out.exp = TRUE, na.rm = FALSE),
   avg.specs = list(avg.type = "geomean", recent.excl = FALSE, lt.smooth = TRUE,
     rel.avg.type = "regular", min.lt.yrs = 20, min.perc.yrs = 20),
-  metric.bm = list(RelAbd = c(NA, NA), AbsAbd = c(1000, 10000), LongTrend = c(0.5,
-    0.75), PercChange = c(-25, -15), ProbDeclBelowLBM = c(NA, NA), Percentile = c(0.25,
-    0.5)),
+  metric.bm = list(RelAbd = c(NA, NA), AbsAbd = c(1000, 10000), LongTrend = c(0.5, 0.75),
+    PercChange = c(-25, -15), ProbDeclBelowLBM = c(NA, NA), Percentile = c(0.25, 0.5)),
   retro.start = NULL,
   tracing = TRUE
 )

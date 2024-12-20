@@ -15,8 +15,8 @@ require(tidyverse)
 data.out <- data.df # start a new data object
 
 # These used to be arguments, now that things have stabilized, they're just hardwired
-status.labels = c("Red","RedAmber","Amber","AmberGreen","Green", "None","NotRed"),
-status.scores = c(5,4,3,2,1,NA,2)
+status.labels <- c("Red","RedAmber","Amber","AmberGreen","Green", "None","NotRed")
+status.scores <- c(5,4,3,2,1,NA,2)
 scores.df <- data.frame(Status = status.labels,Score = status.scores)
 
 
