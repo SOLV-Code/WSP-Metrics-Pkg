@@ -28,7 +28,7 @@ library("tidyverse")
 # fix the CU_ID ("_" vs. "-") (just in case, this is a recurring issue)
 cu.file$CU_ID <- gsub("_","-",cu.file$CU_ID)
 cu.info$CU_ID <- gsub("_","-",cu.info$CU_ID)
-
+cyclic.cu.bm$CU_ID <- gsub("_","-",cyclic.cu.bm$CU_ID)
 
 cu.list <- unique(cu.file[,c("Species","CU_Name","CU_ID")])
 cu.list
