@@ -176,10 +176,23 @@ head(test.out)
 
 ### Illustration of Rapid Status Decision Tree Functions
 
-The functions are:
+The core function is:
 
-* *applyRapidStatus()*: function that applies the rapid status decision tree to a data set of WSP metrics generated with *calcMetrics()*
-* **add plotting functions once they are included**
+* *applyRapidStatusTree()*: function that applies the rapid status decision tree to a data set of WSP metrics generated with *calcMetrics()*
+
+Additional functions that support the overall workflow are:
+
+
+* *calculateMetricsByCU()*: loops through a data set of CU spawner time series and applies the calcMetrics() function
+
+* *prepDataForRapidStatus.()*: reorganizes the output from calculateMetricsByCU() into the format requires by generateRapidStatus()
+
+* *generateRapidStatus()*: reorganizes the outputs from prepDataForRapidStatus(), applies the function applyRapidStatusTree() to each CU, and then does some post-processing
+
+* *plotStatusDashboards()*: takes outputs from generateRapidStatus() and creates 1 png file with standard diagnostics for each CU
+
+* *generateReportTemplate()*: creates a basic markdown template (Git repo Readme or RStudio Quarto template) after the other functions have been used to calculate metrics, apply the rapid status decision tree, and plot dashboards.
+
 
 [This repository](https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples) has
 worked examples of the full workflow from metric calculations to status dashboards, using all the functions from this package.

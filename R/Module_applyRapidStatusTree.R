@@ -1,4 +1,4 @@
-#' applyRapidStatus
+#' applyRapidStatusTree
 #'
 #' this function applies the current version of the rapid status decision tree to a data set of retrospective status metrics calculated with the calcMetrics() function
 #' @param data.df data file with metric values, with labels in first column (and optionally an IntStatus column that has results from any integrated status assessments that have been done)
@@ -8,7 +8,7 @@
 #' @export
 
 
-applyRapidStatus <- function(data.df, id.col = "CU_ID", group.var = NULL){
+applyRapidStatusTree <- function(data.df, id.col = "CU_ID", group.var = NULL){
 
 require(tidyverse)
 
@@ -351,12 +351,6 @@ dimnames(summary.tab)[[1]][1] <- "SynStatus"
 
 if("IntStatus" %in% names(data.df)){
 
-  # IF CategoricalRealist -> convert Int Status
-
-   if(algorithm == "CategoricalRealist"){
-        data.out$IntStatus <- dplyr::recode(data.out$IntStatus, RedAmber = "Red", AmberGreen = "Amber")
-     }
-
   intstatus.summary  <- as.data.frame(t(as.matrix(table(data.out$IntStatus)))   )
 
   summary.tab <- bind_rows(summary.tab, intstatus.summary)
@@ -397,7 +391,6 @@ data.out[data.out$ErrorScore > 0 &!is.na(data.out$ErrorScore) , "ErrorType"] <- 
 
 
 # Freq of error scores
-
 
 error.score.freq <- as.data.frame(as.matrix(table(data.out$ErrorScore))) %>% rename(All=V1) %>% rownames_to_column(var="ErrorScore")
 
@@ -494,12 +487,13 @@ if(!("RedAmber" %in% rules.df$Status | "AmberGreen" %in% rules.df$Status)){
           data.use$IntStatus <- dplyr::recode(data.use$IntStatus, RedAmber = "Red", AmberGreen = "Amber")}
 
 chisq.table <-   table(data.use$SynStatus,data.use$IntStatus)
-chisq.test.out <- chisq.test(chisq.table,simulate.p.value = TRUE,B=2000)
+# chi sq test call only works if all CUs have at least 1 Int status (Or something like that) - Skipping for now
+#chisq.test.out <- chisq.test(chisq.table,simulate.p.value = TRUE,B=2000)
 
 chisq.list <- list(input = chisq.table,
-                   statistic = chisq.test.out$statistic,
-                   p.value = chisq.test.out$p.value,
-				   p.label = p.label(chisq.test.out$p.value)
+                   statistic = NA, #chisq.test.out$statistic,
+                   p.value = NA, #chisq.test.out$p.value,
+				   p.label = NA #p.label(chisq.test.out$p.value)
                    #observed = chisq.test.out$observed#,
                    #expected = chisq.test.out$expected
                    )
