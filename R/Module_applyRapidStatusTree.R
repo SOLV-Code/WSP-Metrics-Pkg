@@ -10,6 +10,8 @@
 
 applyRapidStatusTree <- function(data.df, id.col = "CU_ID", group.var = NULL){
 
+
+
 require(tidyverse)
 
 data.out <- data.df # start a new data object
@@ -353,6 +355,7 @@ if("IntStatus" %in% names(data.df)){
 
   intstatus.summary  <- as.data.frame(t(as.matrix(table(data.out$IntStatus)))   )
 
+  
   summary.tab <- bind_rows(summary.tab, intstatus.summary)
   dimnames(summary.tab)[[1]][2] <- "IntStatus"
 

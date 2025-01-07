@@ -27,6 +27,14 @@ library(tidyverse)
 
 # fix the CU_ID ("_" vs. "-") (just in case, this is a recurring issue)
 cu.info$CU_ID <- gsub("_","-",cu.info$CU_ID)
+cu.data$CU_ID <- gsub("_","-",cu.data$CU_ID)
+publ.status.src$CU_ID <- gsub("_","-",publ.status.src$CU_ID)
+retro.values$CU_ID <- gsub("_","-", retro.values$CU_ID)
+retro.status$CU_ID <- gsub("_","-", retro.status$CU_ID)
+metrics.long$CU_ID <- gsub("_","-", metrics.long$CU_ID)
+
+
+
 
 qual.score.tab <- data.frame(
 	BinLabel = c("Node3","Node17","Node19","Node20","Node21","Node22","Node23","Node33","Node36","Node37","Node64","Node65"),
@@ -54,7 +62,9 @@ publ.int.status <- publ.status.src %>%  dplyr::filter(Metric == "IntStatus") %>%
                                         mutate(IntStatusRaw_Short = recode(IntStatusRaw, Red = "R",RedAmber = "RA", Amber = "A",AmberGreen = "AG",Green = "G"),
                                                IntStatus_Short = recode(IntStatus, Red = "R", Amber = "A",Green = "G"))
 
-print(publ.int.status)
+
+
+
 
 # == Apply the Rapid Status Decision Tree ========================================= #
 
@@ -64,10 +74,6 @@ retro.rapid.status <- applyRapidStatusTree(data.df = retro.values %>%
 
 # ================================================================================== #
 
-print("---")
-print(names(retro.rapid.status))
-print("---")
-print(names(retro.rapid.status$data))
 
 write.csv(retro.rapid.status$data, 
 		paste0(out.filepath,"/Retrospective_RapidStatus_",out.label,".csv"),row.names = FALSE)

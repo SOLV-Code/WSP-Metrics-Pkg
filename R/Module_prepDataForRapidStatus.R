@@ -20,6 +20,8 @@ require(tidyr)
 # fix the CU_ID ("_" vs. "-") (just in case, this is a recurring issue)
 cu.info$CU_ID <- gsub("_","-",cu.info$CU_ID)
 metrics.raw$CU_ID <- gsub("_","-",metrics.raw$CU_ID)
+gen.avg.src$CU_ID <- gsub("_","-",gen.avg.src$CU_ID)
+
   
 # change to the units the algorithms are using
 metrics.raw[metrics.raw$Metric == "LongTrend","Value"] <- metrics.raw[metrics.raw$Metric == "LongTrend","Value"] * 100 
