@@ -150,7 +150,7 @@ if(length(fig.name)>0){
 
 if(type=="readme"){
 
-cat(paste0('<img src=\" ', repo.path,'/blob/main/',files.path,'/Dashboards/',fig.name,'\") width="600">'),file = file.name,append=TRUE)
+cat(paste0('<img src=\"', repo.path,'/blob/main/',files.path,'/Dashboards/',fig.name,'\" width="600">'),file = file.name,append=TRUE)
 
 }
 
