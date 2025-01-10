@@ -122,7 +122,10 @@ if( dim(cu.lookup.sub)[1]==1){ # do only if have exactly 1 matching CU_ID in the
   if(cu.lookup.sub$Cyclic==TRUE) {cyclic.bm.sub <- cyclic.cu.bm[cyclic.cu.bm$CU_ID==cu.id,] }
   if(cu.lookup.sub$Cyclic==FALSE){cyclic.bm.sub <- NA }
 
-  for(series.do in c("SpnForAbd_Wild","SpnForTrend_Wild" )){  #"SpnForAbd_Total","SpnForTrend_Total",
+
+  series.list <- c("SpnForAbd_Wild","SpnForTrend_Wild" )	
+
+  for(series.do in series.list){  #"SpnForAbd_Total","SpnForTrend_Total",
 
 print("---- series ---")
   print(series.do)
@@ -153,7 +156,10 @@ print(cu.yrs)
                               avg.specs = cu.avg.specs,
                               metric.bm =  cu.bm,
                               retro.start = retro.start.use,
-                              tracing = TRUE)
+                              tracing = FALSE)
+
+
+
 
 
 print("Flag 1--------------------")
@@ -170,7 +176,7 @@ print("Flag 1--------------------")
   # ********************************* BMac changes ***********************************
 
 
-
+write_csv(metrics.tmp,paste0("metrics_cu_out_",i,"_",series.do,".csv"))
 
 
 #	CHECK THAT LOOKUPS AND INPUT VALUES ARE FED IN PROPERLY
@@ -228,12 +234,18 @@ print("Flag 1--------------------")
     
 	
 	
-	
+	# not working inside function
 	#if(exists("metrics.cu.out")){metrics.cu.out <- rbind(metrics.cu.out,metrics.tmp)  }
     #if(!exists("metrics.cu.out")){metrics.cu.out <- metrics.tmp }
 
-	if(i >1){metrics.cu.out <- rbind(metrics.cu.out,metrics.tmp)  }
-	if(i == 1){metrics.cu.out <- metrics.tmp }
+	# not handling first instance properly, b/c i = 1 means first CU, but do 2 series for that CU, first gets overwritten
+	#if(i >1){metrics.cu.out <- rbind(metrics.cu.out,metrics.tmp)  }
+	#if(i == 1){metrics.cu.out <- metrics.tmp }
+
+	#this fixes it
+	start.new.output <- i == 1 & series.do == series.list[1]
+	if(!start.new.output){metrics.cu.out <- rbind(metrics.cu.out,metrics.tmp)  }
+	if(start.new.output){metrics.cu.out <- metrics.tmp }
 
 
     if(cu.slope.specs$slope.smooth){
@@ -261,6 +273,9 @@ print(paste("last row done =",i))
 
 print(head(metrics.cu.out))
 
+
+write_csv(metrics.cu.out,"metrics_cu_out.csv")
+
 #------------------------------------------------------------------------------------
 # clear out metrics that are not meaningful (e.g. abs BM on data for trends)
 # (already skipping the _Total series above, just doing _Wild)
@@ -274,7 +289,7 @@ metrics.cu.out.cleaned  <-  rbind(
                                              ) %>%
         left_join(cu.info %>% select(CU_ID,DataQualkIdx) %>% rename(Data_Type = DataQualkIdx) , by ="CU_ID")
 
-
+write_csv(metrics.cu.out.cleaned,"metrics_cu_out_cleaned1.csv")
 
 
 #####################################
