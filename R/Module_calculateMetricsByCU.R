@@ -176,7 +176,7 @@ print("Flag 1--------------------")
   # ********************************* BMac changes ***********************************
 
 
-write_csv(metrics.tmp,paste0("metrics_cu_out_",i,"_",series.do,".csv"))
+
 
 
 #	CHECK THAT LOOKUPS AND INPUT VALUES ARE FED IN PROPERLY
@@ -274,7 +274,7 @@ print(paste("last row done =",i))
 print(head(metrics.cu.out))
 
 
-write_csv(metrics.cu.out,"metrics_cu_out.csv")
+
 
 #------------------------------------------------------------------------------------
 # clear out metrics that are not meaningful (e.g. abs BM on data for trends)
@@ -289,7 +289,7 @@ metrics.cu.out.cleaned  <-  rbind(
                                              ) %>%
         left_join(cu.info %>% select(CU_ID,DataQualkIdx) %>% rename(Data_Type = DataQualkIdx) , by ="CU_ID")
 
-write_csv(metrics.cu.out.cleaned,"metrics_cu_out_cleaned1.csv")
+
 
 
 #####################################
