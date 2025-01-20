@@ -1,8 +1,8 @@
 Package: WSPMetrics
 Type: Package
-Title: Functions for the WSP Metrics Package
-Version: 0.1.0
-Author: Gottfried Pestal, Carrie Holt
+Title: WSPMetrics Package: R package to calculate and use metrics for status assessments under Canada's Wild Salmon Policy (WSP)
+Version: 1.0
+Author: Carrie Holt, Gottfried Pestal 
 Maintainer: The package maintainer <carrie.holt@dfo-mpo.gc.ca>
 Description: This package includes functions for calculating WSP status metrics.
 License: GNU General Public Licence
@@ -12,6 +12,5 @@ Imports: tidyverse, R2jags, coda, rstanarm,rstan
 SystemRequirements: 
 Suggestions:
 VignetteBuilder: knitr
-URL: https://github.com/SOLV-Code/SPATFunctions-Package
-RoxygenNote: 7.1.1
-
+URL: https://github.com/Pacific-salmon-assess/WSP-Metrics-Pkg
+RoxygenNote: 7.2.3

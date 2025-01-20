@@ -15,3 +15,16 @@ print("including dependencies")
 
 } # end function include.dependencies
 
+
+p.label <- function(x){
+
+if(x >= 0.1){p.out <- ">0.1"}
+if(x < 0.1){p.out <- "<0.1"}
+if(x < 0.05){p.out <- "<0.05"}
+if(x < 0.01){p.out <- "<0.01"}
+if(x < 0.005){p.out <- "<0.005"}
+
+
+return(p.out)
+
+}
