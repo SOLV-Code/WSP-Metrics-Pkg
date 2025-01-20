@@ -21,7 +21,7 @@ or start a discussion thread [here](https://github.com/Pacific-salmon-assess/WSP
 
 If you use this package in your work, please cite it as follows:
 
-*Holt C, Pestal G, MacDonald B, and Grant S (2024) WSPMetrics: Calculate and use metrics for status assessments under Canada's Wild Salmon Policy (WSP). R package version 1.0. https://github.com/Pacific-salmon-assess/WSP-Metrics-Pkg.*
+*Holt C, Pestal G, MacDonald B, and Grant S (2025) WSPMetrics: Calculate and use metrics for status assessments under Canada's Wild Salmon Policy (WSP). R package version 0.9. https://github.com/Pacific-salmon-assess/WSP-Metrics-Pkg.*
 
 
 ## Background
@@ -36,12 +36,12 @@ The WSP metrics are designed to capture different considerations related to *sta
 Long-Term Trend | Recent Avg / Long-term Avg |  geometric mean vs. arithmetic mean |  *calcLongTermTrendSimple()* for a single vector. *calcLongTermTrend()* for a data frame with Years x Stocks (includes retrospective calculations).
 Percent Change  | change over n generations | alternative smoothing (log, gen avg), time window (n gen, n gen +1) | *calcPercChangeSimple()* for a single vector of raw values. *calcPercChange()* for a data frame with Years x Stocks (includes retrospective calculations).
 Probability of Decline | Prob(PercChange> X%) | alternative smoothing (log, gen avg), time window (n gen, n gen +1) |   *calcPercChangeSimple()* for regression based calculation in a single vector. *calcPercChange()* for a data frame with Years x Stocks (includes retrospective calculations). *calcPercChangeMCMC()* for a Bayesian probability (based on posterior distribution of regression slopes) calculated on a single vector of raw values.
-Relative Abundance - SR-Based BM| Recent Avg compared to biological benchmarks (Sgen, 80%Smsy) | geometric mean vs. arithmetic mean, alternative benchmark estimate approaches | first step will be to integrate a subroutine *calcRickerSgen* that converts Ricker parameters to benchmark estimates. For long-term, consider building a larger module *calcRelAbdBM()* that does the model fitting as well.
+Relative Abundance - SR-Based BM| Recent Avg compared to biological benchmarks (Sgen, 80%Smsy) | geometric mean vs. arithmetic mean, alternative benchmark estimate approaches | This package is focused on calculating status metrics for WSP implementation, but the relative abundance metric relies on CU-specific estimates of biological benchmarks. Due to the diversity of salmon life history types, available data, spawner-recruit model forms, and estimation approaches, it is not feasible to provide a single generic estimation function that can reliably generate meaningful estimates of Sgen and 80%Smsy with default settings. In order to calculate the relative abundance metric for a CU, users of the *WSPMetrics* package need to provide benchmark estimates as part of the input specifications. A separate R package focused on estimating SR parameters and associated benchmarks is available: [samEst Package](https://github.com/Pacific-salmon-assess/samEst), [Course Material with Examples](https://github.com/TESA-workshops/run-samEst).
 Relative Abd - Percentile BM| Recent Avg compared to user-specified %iles | geometric mean vs. arithmetic mean | *calcPercentileSimple()* for a single vector. NOTE: This function only calculates the percentile value. It is the *calcMetrics()* wrapper function that compares this value to user-specified benchmarks and assigns a status category. [Holt et al. (2018)](https://www.dfo-mpo.gc.ca/csas-sccs/Publications/ResDocs-DocRech/2018/2018_011-eng.html) recommend lower and upper percentile-based status benchmarks at the 25th and 50th percentiles of observed spawner abundances for data-limited conservation units of Chum Salmon when productivity is moderate to high (>2.5 recruits/spawner) and harvest rates are low to moderate (≤40%).  [Holt et al. (2018)](https://www.dfo-mpo.gc.ca/csas-sccs/Publications/ResDocs-DocRech/2018/2018_011-eng.html) suggest further evaluation of percentile benchmarks and the consideration of alternatives when productivity is expected to be low and/or harvest rates high. The function *calcMetrics()* uses 0.25 and 0.50 as the default benchmarks for the percentiles.
 
 ### Rapid Status Decision Tree
 
-Pestal et al. (2024)developed a decision tree that captures how experts in large-scale workshops interpreted the individual status metrics to determine an overall status for each CU. The tree works through a series criteria based on the standard status metrics and produces a Red/Amber/Green designation. For details, see the [References](#References).
+Pestal et al. (2024) developed a decision tree that captures how experts in large-scale workshops interpreted the individual status metrics to determine an overall status for each CU. The tree works through a series of criteria based on the standard status metrics and produces a Red/Amber/Green designation. For details, see the [References](#References).
 
 ## Install
 
@@ -140,7 +140,8 @@ Here is an example of running the calcMetrics() function:
 
 head(exampleData)
 
-yrs.vec <- 1:length(exampleData$Stock1) + 1979 # if your data doesn't have yrs, need to generate a yr vector
+yrs.vec <- 1:length(exampleData$Stock1) + 1979 
+# if your data doesn't have yrs, need to generate a yr vector
 
 plot(yrs.vec, exampleData$Stock1,type="o")
 
@@ -152,12 +153,19 @@ test.out <- calcMetrics (  series.in = exampleData$Stock1 , # vector of values
                           stk.label = "Stock 1", # used for labeling output
                           species.label = "Species", # used for labeling output
                           series.label = "DataVersion", # used for labeling output
-                          slope.specs = list(num.gen = 3, extra.yrs = 0,filter.sides=1, slope.smooth=TRUE,
-                                             log.transform = TRUE, out.exp = TRUE,na.rm=FALSE),
-                          avg.specs = list(avg.type = "geomean",recent.excl=FALSE,
-                                           lt.smooth=TRUE, rel.avg.type="regular",
+                          slope.specs = list(num.gen = 3, 
+											 extra.yrs = 0,filter.sides=1, 
+											 slope.smooth=TRUE,
+                                             log.transform = TRUE, 
+											 out.exp = TRUE,
+											 na.rm=FALSE),
+                          avg.specs = list(avg.type = "geomean",
+										   recent.excl=FALSE,
+                                           lt.smooth=TRUE, 
+										   rel.avg.type="regular",
                                            min.lt.yrs =20,min.perc.yrs =20),
-                          metric.bm =  list(RelAbd = c(30,50),   # set these at arbitrary numbers for the illustration
+                          metric.bm =  list(RelAbd = c(30,50),   
+						  # set the Rel Abd BM at arbitrary numbers for the illustration
                                             AbsAbd = c(1000,10000),
                                             LongTrend = c(0.5,0.75),
                                             PercChange = c(-25,-15),
