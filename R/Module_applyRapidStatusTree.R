@@ -332,7 +332,7 @@ if(dim(node65.df)[1] > 0){
 }
 
 
-data.out <- rbind(node16.na,node10.na, #node2.na, #node10na added Feb 2025  #node32.na,# REMOVED MAR 2024
+data.out <- rbind(node16.na,#node10.na, #node2.na, #node10na added Feb 2025  #node32.na,# REMOVED MAR 2024
                   node3.df,node17.df,node19.df,
                   node20.df,node21.df,node22.df,node23.df,
                   node33.df,
