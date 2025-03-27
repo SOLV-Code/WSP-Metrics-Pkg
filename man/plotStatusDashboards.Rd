@@ -9,7 +9,8 @@ plotStatusDashboards(
   retro.summary.tbl,
   cu.data,
   out.label = "RapidStatusOut",
-  out.filepath = ""
+  out.filepath = "",
+  plot.status.timeline = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ plotStatusDashboards(
 \item{out.label}{label to use in the filenames for the output}
 
 \item{out.filepath}{folder for storing the output files}
+
+\item{plot.status.timeline}{Default is TRUE. If FALSE, do not plot the timeline of rapid statuses in the bottom panel}
 }
 \description{
 this function takes outputs from generateRapidStatus() and creates 1 png file with standard diagnostics for each CU.

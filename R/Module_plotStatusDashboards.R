@@ -6,6 +6,7 @@
 #' @param retro.summary.tbl data frame which is the $SummaryTable component of the output from generateRapidStatus()
 #' @param out.label label to use in the filenames for the output
 #' @param out.filepath folder for storing the output files 
+#' @param plot.status.timeline Default is TRUE. If FALSE, do not plot the timeline of rapid statuses in the bottom panel
 #' @keywords dashboard, plot
 #' @export
 
@@ -16,7 +17,8 @@ plotStatusDashboards <- function(
 				retro.summary.tbl,
 				cu.data, 
 				out.label = "RapidStatusOut",
-				out.filepath = ""){
+				out.filepath = "",
+				plot.status.timeline = TRUE){
 
 
 library(tidyverse)
@@ -419,7 +421,7 @@ png(filename=filename, width = 480*4.5, height = 480*4.8, units = "px", pointsiz
       #############################################################
       # PANEL 5: GRID OF METRICS AND STATUSES
       ###########################################################
-
+     if(plot.status.timeline){
         par(mai=c(1,3.5,1.5,2))
 
         plot(1:5,1:5, type="n",xlim = range(retro.yrs.plot), ylim= c(-7.3,0.5) ,xlab="",ylab="",
@@ -540,6 +542,8 @@ png(filename=filename, width = 480*4.5, height = 480*4.8, units = "px", pointsiz
           } # end if confidence
 
         } # end looping through var
+
+		} # end if doing timeline plot of metrics and rapid status
 
 
       dev.off()
