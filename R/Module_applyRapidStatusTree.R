@@ -34,18 +34,18 @@ if("IntStatus" %in% names(data.df)){
 rules.df <- data.frame(
     Node = paste0("Node", c(3,17,19,20,21,22,23,33,36,37,64,65)),
     Status = c("Red","Red","Red","Amber","Red","Amber","Red","Red","Green","Amber","Green","Amber"),
-    Rule = c("Data Type is AbsAbd AND AbsLBM < 1.5",
-             "Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is RelIdx OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend < 79",
-             "Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is RelIdx OR AbsUBM >= 1, then Have RelLBM, then RelLBM < 1",
-             "Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is AbsAbd AND AbsUBM < 1,then Don't have RelLBM, then LongTrend >= 79",
-             "Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is AbsAbd AND AbsUBM < 1,then Don't have RelLBM, then LongTrend < 79" ,
-             "Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is AbsAbd AND AbsUBM < 1,then Have RelLBM, then RelLBM >= 1",
-             "Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is AbsAbd AND AbsUBM < 1,then Have RelLBM, then RelLBM < 1",
-             "Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is RelIdx OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange < -70",
-             "Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is RelIdx OR AbsUBM >= 1, then Have RelLBM, then RelLBM >= 1, then RelUBM >= 1.1",
-             "Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is RelIdx OR AbsUBM >= 1, then Have RelLBM, then RelLBM >= 1, then RelUBM < 1.1",
-             "Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is RelIdx OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange >= -70, then LongTrend >= 233",
-             "Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is RelIdx OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange >= -70, then LongTrend < 233"
+    Rule = c("AbsLBM < 1.5",
+             "AbsLBM = NA OR AbsLBM >= 1.5, then AbsLBM = NA OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend < 79",  # Bmac changed March  2025
+             "AbsLBM = NA OR AbsLBM >= 1.5, then AbsLBM = NA OR AbsUBM >= 1, then Have RelLBM, then RelLBM < 1",
+             "AbsLBM = NA OR AbsLBM >= 1.5, then AbsUBM < 1,then Don't have RelLBM, then LongTrend >= 79",
+             "AbsLBM = NA OR AbsLBM >= 1.5, then AbsUBM < 1,then Don't have RelLBM, then LongTrend < 79" ,
+             "AbsLBM = NA OR AbsLBM >= 1.5, then AbsUBM < 1,then Have RelLBM, then RelLBM >= 1",
+             "AbsLBM = NA OR AbsLBM >= 1.5, then AbsUBM < 1,then Have RelLBM, then RelLBM < 1",
+             "AbsLBM = NA OR AbsLBM >= 1.5, then AbsLBM = NA OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange < -70",
+             "AbsLBM = NA OR AbsLBM >= 1.5, then AbsLBM = NA OR AbsUBM >= 1, then Have RelLBM, then RelLBM >= 1, then RelUBM >= 1.1",
+             "AbsLBM = NA OR AbsLBM >= 1.5, then AbsLBM = NA OR AbsUBM >= 1, then Have RelLBM, then RelLBM >= 1, then RelUBM < 1.1",
+             "AbsLBM = NA OR AbsLBM >= 1.5, then AbsLBM = NA OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange >= -70, then LongTrend >= 233",
+             "AbsLBM = NA OR AbsLBM >= 1.5, then AbsLBM = NA OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange >= -70, then LongTrend < 233"
     ))
 
 
@@ -59,7 +59,7 @@ rules.df <- data.frame(
 #write.csv(node1.df,"test_node1.csv")
 
 
-node2.df <- node1.df %>% dplyr::filter( DataType == "Rel_Idx" | is.na(AbsLBM) | AbsLBM >= 1.5 )
+node2.df <- node1.df %>% dplyr::filter( is.na(AbsLBM) | AbsLBM >= 1.5 ) #| DataType == "Rel_Idx" ) #Bmac change March 5 2025 - remove data type filtering as unnecessary
 # not a leaf, so no status yet
 if(dim(node2.df)[1] == 0){
   node2.df$SynStatus <- character()
@@ -68,20 +68,22 @@ if(dim(node2.df)[1] == 0){
 }
 #write.csv(node2.df,"test_node2.csv")
 
-node2.na <- node1.df %>% dplyr::filter(is.na(DataType))
-if(dim(node2.na)[1] > 0){
-  node2.na$SynStatus <- "None"
-  node2.na$BinLabel <- "Node2.NA"
-  node2.na$BinPath <- "No AbsLBM or no DataType, so no SynStatus"
-  #write.csv(node2.na,"test_node2na.csv")
-}
+# node2.na <- node1.df %>% dplyr::filter(is.na(DataType)) # Bmac change March 5 2025 - unnecessary node
+# if(dim(node2.na)[1] > 0){
+#   node2.na$SynStatus <- "None"
+#   node2.na$BinLabel <- "Node2.NA"
+#   node2.na$BinPath <- "No AbsLBM or no DataType, so no SynStatus"
+#   #write.csv(node2.na,"test_node2na.csv")
+# }
 
 
-node3.df <- node1.df %>% dplyr::filter( DataType == "Abs_Abd" & AbsLBM < 1.5 )
+#node3.df <- node1.df %>% dplyr::filter( DataType == "Abs_Abd" & AbsLBM < 1.5 )
+node3.df <- node1.df %>% dplyr::filter( !is.na(AbsLBM) & AbsLBM < 1.5 ) #Bmac change March 5 2025 - remove data type filtering, use metric availability
+# not a leaf, so no status yet
 if(dim(node3.df)[1] > 0){
   node3.df$SynStatus <- "Red"
   node3.df$BinLabel <- "Node3"
-  node3.df$BinPath <- "Data Type is AbsAbd AND AbsLBM < 1.5"
+  node3.df$BinPath <- "Have AbsLBM, then AbsLBM < 1.5"
   #write.csv(node3.df,"test_node3.csv")
 }
 
@@ -90,7 +92,7 @@ if(dim(node3.df)[1] > 0){
 # Nodes 4 & 5 (ABS UBM < 1) -----------------------------------------------------
 
 
-node4.df <- node2.df %>% dplyr::filter( DataType == "Rel_Idx" | is.na(AbsUBM) | AbsUBM >= 1)
+node4.df <- node2.df %>% dplyr::filter( is.na(AbsUBM) | AbsUBM >= 1) #| DataType == "Rel_Idx" ) #Bmac fix March 5 2025
 # not a leaf, so no status yet
 if(dim(node4.df)[1] == 0){
   node4.df$SynStatus <- character()
@@ -102,7 +104,8 @@ if(dim(node4.df)[1] == 0){
 # node4.na NOT NEEDED
 
 
-node5.df <- node2.df %>% dplyr::filter( DataType == "Abs_Abd" & AbsUBM < 1)
+#node5.df <- node2.df %>% dplyr::filter( DataType == "Abs_Abd" & AbsUBM < 1)
+node5.df <- node2.df %>% dplyr::filter( !is.na(AbsUBM) & AbsUBM < 1) # Bmac fix March 5 2025
 # not a leaf, so no status yet
 if(dim(node5.df)[1] == 0){
   node5.df$SynStatus <- character()
@@ -135,7 +138,7 @@ node22.df <- node11.df %>% dplyr::filter(RelLBM >=1)
 if(dim(node22.df)[1] > 0){
   node22.df$SynStatus <- "Amber"
   node22.df$BinLabel <- "Node22"
-  node22.df$BinPath <- "Data Type is RelAbd OR AbsLBM >= 1.5, then Data Type is AbsAbd AND AbsUBM < 1,then Have RelLBM, then RelLBM >= 1"
+  node22.df$BinPath <- "Have AbsLBM, then AbsLBM >= 1.5, then have AbsUBM, then AbsUBM < 1,then Have RelLBM, then RelLBM >= 1"
   #write.csv(node22.df,"test_node22.csv")
 }
 
@@ -144,7 +147,7 @@ node23.df <- node11.df %>% dplyr::filter(RelLBM < 1)
 if(dim(node23.df)[1] > 0){
   node23.df$SynStatus <- "Red"
   node23.df$BinLabel <- "Node23"
-  node23.df$BinPath <- "Data Type is RelAbd OR AbsLBM >= 1.5, then Data Type is AbsAbd AND AbsUBM < 1,then Have RelLBM, then RelLBM < 1"
+  node23.df$BinPath <- "Have AbsLBM, then AbsLBM >= 1.5, then have AbsUBM, then AbsUBM < 1,then Have RelLBM, then RelLBM < 1"
   #write.csv(node23.df,"test_node23.csv")
 }
 
@@ -168,7 +171,7 @@ node20.df <- node10.df %>% dplyr::filter(LongTrend >= 79)
 if(dim(node20.df)[1] > 0){
   node20.df$SynStatus <- "Amber"
   node20.df$BinLabel <- "Node20"
-  node20.df$BinPath <- "Data Type is RelAbd OR AbsLBM >= 1.5, then Data Type is AbsAbd AND AbsUBM < 1,then Don't have RelLBM, then LongTrend >= 79"
+  node20.df$BinPath <- "Have AbsLBM, then AbsLBM >= 1.5, then have AbsUBM, then AbsUBM < 1, then Don't have RelLBM, then LongTrend >= 79"
   #write.csv(node20.df,"test_node20.csv")
 }
 
@@ -177,7 +180,7 @@ node21.df <- node10.df %>% dplyr::filter(LongTrend < 79)
 if(dim(node21.df)[1] > 0){
   node21.df$SynStatus <- "Red"
   node21.df$BinLabel <- "Node21"
-  node21.df$BinPath <- "Data Type is RelAbd OR AbsLBM >= 1.5, then Data Type is AbsAbd AND AbsUBM < 1,then Have RelLBM, then RelLBM < 1"
+  node21.df$BinPath <- "Have AbsLBM, then AbsLBM >= 1.5, then have AbsUBM, then AbsUBM < 1, then Don't have RelLBM, then LongTrend < 79"
   #write.csv(node21.df,"test_node21.csv")
 }
 
@@ -201,7 +204,7 @@ node19.df <- node9.df %>% dplyr::filter(RelLBM < 1)
 if(dim(node19.df)[1] > 0){
   node19.df$SynStatus <- "Red"
   node19.df$BinLabel <- "Node19"
-  node19.df$BinPath <- "Data Type is RelAbd OR AbsLBM >= 1.5, then Data Type is RelAbd OR AbsUBM >= 1, then Have RelLBM, then RelLBM < 1"
+  node19.df$BinPath <- "AbsLBM = NA OR AbsLBM >= 1.5, then AbsUBM = NA OR AbsUBM >= 1, then Have RelLBM, then RelLBM < 1"
   #write.csv(node19.df,"test_node19.csv")
 }
 
@@ -221,7 +224,7 @@ node36.df <- node18.df %>% dplyr::filter(RelUBM >= 1.1)
 if(dim(node36.df)[1] > 0){
   node36.df$SynStatus <- "Green"
   node36.df$BinLabel <- "Node36"
-  node36.df$BinPath <- "Data Type is RelAbd OR AbsLBM >= 1.5, then Data Type is RelAbd OR AbsUBM >= 1, then Have RelLBM, then RelLBM >= 1, then RelUBM >= 1.1"
+  node36.df$BinPath <- "AbsLBM = NA OR AbsLBM >= 1.5, then AbsUBM = NA OR AbsUBM >= 1, then Have RelLBM, then RelLBM >= 1, then RelUBM >= 1.1"
   #write.csv(node36.df,"test_node36.csv")
 }
 
@@ -229,7 +232,7 @@ node37.df <- node18.df %>% dplyr::filter(RelUBM < 1.1)
 if(dim(node37.df)[1] > 0){
   node37.df$SynStatus <- "Amber"
   node37.df$BinLabel <- "Node37"
-  node37.df$BinPath <- "Data Type is RelAbd OR AbsLBM >= 1.5, then Data Type is RelAbd OR AbsUBM >= 1, then Have RelLBM, then RelLBM >= 1, then RelUBM < 1.1"
+  node37.df$BinPath <- "AbsLBM = NA OR AbsLBM >= 1.5, then AbsUBM = NA OR AbsUBM >= 1, then Have RelLBM, then RelLBM >= 1, then RelUBM < 1.1"
   #write.csv(node37.df,"test_node37.csv")
 }
 
@@ -254,7 +257,7 @@ node17.df <- node8.df %>% dplyr::filter(LongTrend < 79)
 if(dim(node17.df)[1] > 0){
   node17.df$SynStatus <- "Red"
   node17.df$BinLabel <- "Node17"
-  node17.df$BinPath <- "Data Type is RelAbd OR AbsLBM >= 1.5, then Data Type is RelAbd OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend < 79"
+  node17.df$BinPath <- "AbsLBM = NA OR AbsLBM >= 1.5, then AbsUBM = NA OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend < 79"
   #write.csv(node17.df,"test_node17.csv")
 }
 
@@ -306,7 +309,7 @@ node33.df <- node16.df %>% dplyr::filter(PercChange < -70)
 if(dim(node33.df)[1] > 0){
   node33.df$SynStatus <- "Red"
   node33.df$BinLabel <- "Node33"
-  node33.df$BinPath <- "Data Type is RelAbd OR AbsLBM >= 1.5, then Data Type is RelAbd OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange < -70"
+  node33.df$BinPath <- "AbsLBM = NA OR AbsLBM >= 1.5, then AbsUBM = NA OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange < -70"
   #write.csv(node33.df,"test_node33.csv")
 }
 
@@ -315,7 +318,7 @@ node64.df <- node32.df %>% dplyr::filter(LongTrend >= 233)
 if(dim(node64.df)[1] > 0){
   node64.df$SynStatus <- "Green"
   node64.df$BinLabel <- "Node64"
-  node64.df$BinPath <- " Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is RelIdx OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange >= -70, then LongTrend >= 233"
+  node64.df$BinPath <- " AbsLBM = NA OR AbsLBM >= 1.5, then AbsUBM = NA OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange >= -70, then LongTrend >= 233"
 
 }
 
@@ -324,12 +327,12 @@ node65.df <- node32.df %>% dplyr::filter(LongTrend < 233)
 if(dim(node65.df)[1] > 0){
   node65.df$SynStatus <- "Amber"
   node65.df$BinLabel <- "Node65"
-  node65.df$BinPath <- " Data Type is RelIdx OR AbsLBM >= 1.5, then Data Type is RelIdx OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange >= -70, then LongTrend < 233"
+  node65.df$BinPath <- "AbsLBM = NA OR AbsLBM >= 1.5, then AbsUBM = NA OR AbsUBM >= 1, then Don't have RelLBM, then LongTrend >= 79, then PercChange >= -70, then LongTrend < 233"
 
 }
 
 
-data.out <- rbind(node2.na,node16.na,#node32.na,# REMOVED MAR 2024
+data.out <- rbind(node16.na,#node10.na, #node2.na, #node10na added Feb 2025  #node32.na,# REMOVED MAR 2024
                   node3.df,node17.df,node19.df,
                   node20.df,node21.df,node22.df,node23.df,
                   node33.df,
