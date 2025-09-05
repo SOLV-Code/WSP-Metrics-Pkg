@@ -481,7 +481,7 @@ png(filename=filename, width = 480*4.5, height = 480*4.8, units = "px", pointsiz
 
 
             if(i <6){
-              unk.df <- var.sub %>% dplyr::filter(is.na(Var) | Var == "None")
+              unk.df <- var.sub %>% dplyr::filter(is.na(Var) | Var == "DD")
               unk.df
 
               if(dim(unk.df)[1]>0){

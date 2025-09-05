@@ -17,7 +17,7 @@ require(tidyverse)
 data.out <- data.df # start a new data object
 
 # These used to be arguments, now that things have stabilized, they're just hardwired
-status.labels <- c("Red","RedAmber","Amber","AmberGreen","Green", "None","NotRed")
+status.labels <- c("Red","RedAmber","Amber","AmberGreen","Green", "DD","NotRed")
 status.scores <- c(5,4,3,2,1,NA,2)
 scores.df <- data.frame(Status = status.labels,Score = status.scores)
 
@@ -25,7 +25,7 @@ scores.df <- data.frame(Status = status.labels,Score = status.scores)
 # clean up the int status column (if it exists)
 if("IntStatus" %in% names(data.df)){
 
-      data.out$IntStatus[!(data.out$IntStatus %in% status.labels)] <- "None"
+      data.out$IntStatus[!(data.out$IntStatus %in% status.labels)] <- "DD"
 }
 
 
@@ -70,7 +70,7 @@ if(dim(node2.df)[1] == 0){
 
 # node2.na <- node1.df %>% dplyr::filter(is.na(DataType)) # Bmac change March 5 2025 - unnecessary node
 # if(dim(node2.na)[1] > 0){
-#   node2.na$SynStatus <- "None"
+#   node2.na$SynStatus <- "DD"
 #   node2.na$BinLabel <- "Node2.NA"
 #   node2.na$BinPath <- "No AbsLBM or no DataType, so no SynStatus"
 #   #write.csv(node2.na,"test_node2na.csv")
@@ -170,7 +170,7 @@ if(dim(node10.df)[1] == 0){
 node20.na <- node10.df  %>% dplyr::filter(is.na(LongTrend))
 if(dim(node20.na)[1] > 0){
   #print("node 16 na")
-  node20.na$SynStatus <- "None"
+  node20.na$SynStatus <- "DD"
   node20.na$BinLabel <- "Node20.NA"
   node20.na$BinPath <- "No LongTrend, so no SynStatus"
 }
@@ -275,7 +275,7 @@ if(dim(node17.df)[1] > 0){
 node16.na <- node8.df %>% dplyr::filter(is.na(LongTrend))
 if(dim(node16.na)[1] > 0){
   #print("node 16 na")
-  node16.na$SynStatus <- "None"
+  node16.na$SynStatus <- "DD"
   node16.na$BinLabel <- "Node16.NA"
   node16.na$BinPath <- "No LongTrend, so no SynStatus"
   #write.csv(node16.na,"test_node16NA.csv")
@@ -296,7 +296,7 @@ if(dim(node16.df)[1] == 0){
 # ALSO REMOVED node32.na FROM THE OUTPUT OBJECT AT THE END
 #if(dim(node32.na)[1] > 0){
   #print("node 32 na")
-#  node32.na$SynStatus <- "None"
+#  node32.na$SynStatus <- "DD"
 #  node32.na$BinLabel <- "Node32.NA"
 #  node32.na$BinPath <- "LongTrend > 79, but no ShortTrend, so no SynStatus"
   #write.csv(node16.na,"test_node16NA.csv")
@@ -499,7 +499,7 @@ if("IntStatus" %in% names(data.df)){  # do Chi Sq tests
 
   data.use <- data.out
 
-  data.use$IntStatus <- dplyr::recode(data.out$IntStatus, DD = "None", UD = "None")
+  data.use$IntStatus <- dplyr::recode(data.out$IntStatus, UD = "DD")
 
 if(!("RedAmber" %in% rules.df$Status | "AmberGreen" %in% rules.df$Status)){
           data.use$IntStatus <- dplyr::recode(data.use$IntStatus, RedAmber = "Red", AmberGreen = "Amber")}
