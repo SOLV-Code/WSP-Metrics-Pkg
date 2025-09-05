@@ -156,6 +156,7 @@ if(dim(node23.df)[1] > 0){
 # NODES SUB-5 - DO NOT HAVE REL BM -----------------------------------
 
 
+
 node10.df <- node5.df  %>% dplyr::filter(is.na(RelLBM))
 # not a leaf, so no status yet
 if(dim(node10.df)[1] == 0){
@@ -163,9 +164,17 @@ if(dim(node10.df)[1] == 0){
   node10.df$BinLabel <- character()
   node10.df$BinPath <- character()
 }
-#write.csv(node10.df,"test_node10.csv")
 
-# Node 10 NA not needed b/c checking for NA already
+
+# just in case there is info here, but no LongTrend for the next step
+node20.na <- node10.df  %>% dplyr::filter(is.na(LongTrend))
+if(dim(node20.na)[1] > 0){
+  #print("node 16 na")
+  node20.na$SynStatus <- "None"
+  node20.na$BinLabel <- "Node20.NA"
+  node20.na$BinPath <- "No LongTrend, so no SynStatus"
+}
+
 
 node20.df <- node10.df %>% dplyr::filter(LongTrend >= 79)
 if(dim(node20.df)[1] > 0){
@@ -332,7 +341,10 @@ if(dim(node65.df)[1] > 0){
 }
 
 
-data.out <- rbind(node16.na,#node10.na, #node2.na, #node10na added Feb 2025  #node32.na,# REMOVED MAR 2024
+data.out <- rbind(node16.na,node20.na, # node20.na added Sep 2025
+#node2.na, 
+#node10na added Feb 2025, the removed,
+#node32.na,# REMOVED MAR 2024
                   node3.df,node17.df,node19.df,
                   node20.df,node21.df,node22.df,node23.df,
                   node33.df,
