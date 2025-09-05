@@ -268,12 +268,20 @@ print("Flag 1--------------------")
   # if don't have at least 5 non-zero obs, fill in NA values for all years
   if(!(sum(!is.na(cu.series))>5 &  sum(cu.series>0,na.rm=TRUE)>5)){
   
-  	metrics.tmp <- data.frame(CU_ID = cu.id, Year = cu.yrs)
-	  
-	# in case the first one it tries has no data
-  	start.new.output <- i == 1 & series.do == series.list[1]
-	if(!start.new.output){metrics.cu.out <- rbind(metrics.cu.out,metrics.tmp)  }
-	if(start.new.output){metrics.cu.out <- metrics.tmp }
+	metrics.labels <- c(rep("RelAbd", length(retro.start.use:last(cu.yrs))), rep("AbsAbd", length(retro.start.use:last(cu.yrs))),
+                        rep("LongTrend", length(retro.start.use:last(cu.yrs))), rep("PercChange", length(retro.start.use:last(cu.yrs))),
+                        rep("ProbDeclBelowLBM", length(retro.start.use:last(cu.yrs))), rep("Percentile", length(retro.start.use:last(cu.yrs)))
+                        )
+
+    metrics.tmp <- data.frame(CU_ID = cu.id, Species=cu.species, Stock=cu.name, Label=series.do, 
+	Year = retro.start.use:last(cu.yrs), Metric=metrics.labels, Value=NA, LBM=NA, UBM=NA, Status=NA)
+
+    # in case the first one it tries has no data
+    start.new.output <- i == 1 & series.do == series.list[1]
+    if(!start.new.output){metrics.cu.out <-  rbind(metrics.cu.out,metrics.tmp)  }
+    if(start.new.output){metrics.cu.out <- metrics.tmp }
+	 
+	 
  
   } # end if don't do any metrics calcs
   
