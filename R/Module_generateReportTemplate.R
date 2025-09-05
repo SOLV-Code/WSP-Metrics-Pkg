@@ -105,13 +105,13 @@ print(fig.list)
 for(cu.do in cu.list){
 
 
-print(cu.do)
+#print(cu.do)
 
 specs.sub <- cu.specs %>% dplyr::filter(CU_ID==cu.do)
 
 cu.name <- specs.sub$CU_Name
 
-print(cu.name)
+#print(cu.name)
 
 if(type=="readme"){
 

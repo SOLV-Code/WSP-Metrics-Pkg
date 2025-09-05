@@ -264,6 +264,27 @@ print("Flag 1--------------------")
 
 
   } # end if have at least 5 obs
+  
+  # if don't have at least 5 non-zero obs, fill in NA values for all years
+  if(!(sum(!is.na(cu.series))>5 &  sum(cu.series>0,na.rm=TRUE)>5)){
+  
+	metrics.labels <- c(rep("RelAbd", length(retro.start.use:last(cu.yrs))), rep("AbsAbd", length(retro.start.use:last(cu.yrs))),
+                        rep("LongTrend", length(retro.start.use:last(cu.yrs))), rep("PercChange", length(retro.start.use:last(cu.yrs))),
+                        rep("ProbDeclBelowLBM", length(retro.start.use:last(cu.yrs))), rep("Percentile", length(retro.start.use:last(cu.yrs)))
+                        )
+
+    metrics.tmp <- data.frame(CU_ID = cu.id, Species=cu.species, Stock=cu.name, Label=series.do, 
+	Year = retro.start.use:last(cu.yrs), Metric=metrics.labels, Value=NA, LBM=NA, UBM=NA, Status=NA)
+
+    # in case the first one it tries has no data
+    start.new.output <- i == 1 & series.do == series.list[1]
+    if(!start.new.output){metrics.cu.out <-  rbind(metrics.cu.out,metrics.tmp)  }
+    if(start.new.output){metrics.cu.out <- metrics.tmp }
+	 
+	 
+ 
+  } # end if don't do any metrics calcs
+  
   } # end looping through series
   } # end if have  matching CU_ID in the lookup file
 
@@ -313,7 +334,7 @@ write.csv(metrics.cu.out.cleaned,
  paste0(out.filepath,"/",out.label,"_METRICS_FILE_BY_CU_PRE_CLEAN.csv"),
  row.names=FALSE)
 
-# GP New 2024-05-28: Extract Gen Avg  so can merge back in later (get deleted below of AbsAbd/RelAbd metrics are turned off)
+# GP New 2024-05-28: Extract Gen Avg  so can merge back in later (get deleted below if AbsAbd/RelAbd metrics are turned off)
 gen.avg.used.df <- metrics.cu.out.cleaned %>% dplyr::filter(Metric == "RelAbd") %>% select(CU_ID, Year,Value)
 write.csv(gen.avg.used.df,  paste0(out.filepath,"/",out.label,"_GenerationalAvg_Values.csv"),row.names=FALSE)
 

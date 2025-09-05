@@ -116,18 +116,18 @@ for(cu.plot in cu.list){
   if(sum(!is.na(data.sub$SpnForAbd_Wild))>0){
 
     data.type <- cu.info.sub$DataQualkIdx
-    data.type
+    #data.type
 
   cu.label  <- gsub("/","",cu.info.sub$CU_Acro)
-  cu.label
+  #cu.label
+  
+  # REVISED 2025-09-04
+  cu.filename <- gsub("/","_",gsub("-","_",cu.plot))
   
   filename <- paste0(out.filepath,"/", 
 					 gsub(" ","",cu.info.sub$Group),"_",
-                     cu.label,"_",gsub("-","_",cu.plot),".png")
+                     cu.label,"_",cu.filename,".png")
              
-   # Need to fix this before feeding into the function
-   #if(cu.plot=="SEL-06-03/SEL-06-02") filename <- paste0("OUTPUT/DASHBOARDS/MetricsandStatus/",cu.info.sub$Data_Stage,"/",
-   #                                                          gsub(" ","",cu.info.sub$Group),"_", cu.label,"SEL-06-03_02_.png")
   
 png(filename=filename, width = 480*4.5, height = 480*4.8, units = "px", pointsize = 14*2.3, bg = "white",  res = NA)
 
@@ -481,7 +481,7 @@ png(filename=filename, width = 480*4.5, height = 480*4.8, units = "px", pointsiz
 
 
             if(i <6){
-              unk.df <- var.sub %>% dplyr::filter(is.na(Var) | Var == "None")
+              unk.df <- var.sub %>% dplyr::filter(is.na(Var) | Var == "DD")
               unk.df
 
               if(dim(unk.df)[1]>0){
