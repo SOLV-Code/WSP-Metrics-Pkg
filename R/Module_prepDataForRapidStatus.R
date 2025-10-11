@@ -54,7 +54,7 @@ metrics.tmp2 <- metrics.tmp1 %>% rbind(metrics.tmp1 %>% filter(Metric == "RelLBM
 
 
 # Write long format metrics to sub file
-write.csv(metrics.tmp2, paste0(out.filepath,"/Metrics_Longform_SUB_",out.label,".csv"))
+write.csv(metrics.tmp2, paste0(out.filepath,"/Retrospective_Metrics_Longform_",out.label,".csv"))
 
 std.metrics <- c("AbsLBM","AbsUBM","LongTrend","PercChange","RelLBM","RelUBM")
 

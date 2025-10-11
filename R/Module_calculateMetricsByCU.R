@@ -7,6 +7,7 @@
 #' @param retro.start.use first year for the retrospective metrics calculations (if data are available)
 #' @param out.label label to use in the filenames for the output
 #' @param out.filepath folder for storing the output files 
+#' @param diagnostics.out if TRUE, generate a csv file with intermediate results before applying CU-specific usability specifications.
 #' @keywords trend
 #' @export
 
@@ -17,7 +18,8 @@
 calculateMetricsByCU <- function(cu.file,cu.info,cyclic.cu.bm = NULL,
                                  retro.start.use = 1995,
 								 out.label = "MetricsOut",
-								 out.filepath = ""){
+								 out.filepath = "",
+								 diagnostics.out = FALSE){
   
 # retro.start.use start year for retrospective calculation of metrics  
 # WARNING: THIS MUST INCLUDE AT LEAST 4 YEARS (so that  all 4 cycle-specific BM calc get used to populate outputs below; crashes otherwise!)
@@ -329,10 +331,11 @@ absabd.fix.idx <- grepl("AbsAbd", metrics.cu.out.cleaned$Metric) & unlist(metric
 shorttrend.fix.idx <- grepl("ShortTrend", metrics.cu.out.cleaned$Metric) & unlist(metrics.cu.out.cleaned$CU_ID) %in%  not.shorttrend.list
 longtrend.fix.idx <- grepl("LongTrend", metrics.cu.out.cleaned$Metric) & unlist(metrics.cu.out.cleaned$CU_ID) %in%  not.longtrend.list
 
-
+if(diagnostics.out){
 write.csv(metrics.cu.out.cleaned,
- paste0(out.filepath,"/",out.label,"_METRICS_FILE_BY_CU_PRE_CLEAN.csv"),
+ paste0(out.filepath,"/",out.label,"_IntermediateResults_BeforeCleaning.csv"),
  row.names=FALSE)
+ }
 
 # GP New 2024-05-28: Extract Gen Avg  so can merge back in later (get deleted below if AbsAbd/RelAbd metrics are turned off)
 gen.avg.used.df <- metrics.cu.out.cleaned %>% dplyr::filter(Metric == "RelAbd") %>% select(CU_ID, Year,Value)

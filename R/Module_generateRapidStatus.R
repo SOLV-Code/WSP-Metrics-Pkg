@@ -74,9 +74,10 @@ retro.rapid.status <- applyRapidStatusTree(data.df = retro.values %>%
 
 # ================================================================================== #
 
+# Raw outputs from decision tree. Reorganizing below. don't need this one anymore.
+#write.csv(retro.rapid.status$data, 
+#		paste0(out.filepath,"/Retrospective_RapidStatus_",out.label,".csv"),row.names = FALSE)
 
-write.csv(retro.rapid.status$data, 
-		paste0(out.filepath,"/Retrospective_RapidStatus_",out.label,".csv"),row.names = FALSE)
 
 retro.summary.tbl <- retro.rapid.status$data %>%
                               dplyr::rename(RapidStatus = SynStatus,RapidScore = SynScore) %>%
@@ -107,7 +108,7 @@ retro.summary.tbl <- retro.summary.tbl %>%
 						mutate(IntStatus2 = recode(IntStatus3, "Amber" = "NotRed","Green" = "NotRed"))
 
 write.csv(retro.summary.tbl, 
-	paste0(out.filepath,"/Retro_Synoptic_Details_",out.label,".csv"),
+	paste0(out.filepath,"/Retrospective_RapidStatus_Results_",out.label,".csv"),
 	row.names = FALSE)   
 
 
