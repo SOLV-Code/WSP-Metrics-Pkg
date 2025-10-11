@@ -98,9 +98,13 @@ retro.summary.tbl <- retro.rapid.status$data %>%
                                                  by= c("CU_ID","Year")   ) %>%
                               select(CU_ID,Species,Stock,	DataType,Year,SpnForAbd_Wild, SpnForTrend_Wild, everything()) %>%
                               left_join(qual.score.tab %>% 
-                                           select(BinLabel, ConfidenceRating5, ConfidenceRating3, ConfidenceRating2),
-                                                      by = "BinLabel")
-                                
+                                           select(BinLabel, ConfidenceRating3),
+                                                      by = "BinLabel") %>%
+							#  New output tweaks Oct 2025
+                                select(-NumStdMetrics) %>% # not needed anymore
+								select(-c(RelLBMCat, RelUBMCat, AbsLBMCat, AbsUBMCat) %>% # obsolete. have RelAbdCat and AbsAbdCat now
+								dplyr::rename(GenAvgSpnForAbd = Value, ConfidenceRating = ConfidenceRating3))
+
 
 retro.summary.tbl$IntStatus5 <- retro.summary.tbl$IntStatusRaw
 retro.summary.tbl <- retro.summary.tbl %>% 
