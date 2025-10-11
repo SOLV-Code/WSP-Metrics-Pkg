@@ -10,7 +10,8 @@ calculateMetricsByCU(
   cyclic.cu.bm = NULL,
   retro.start.use = 1995,
   out.label = "MetricsOut",
-  out.filepath = ""
+  out.filepath = "",
+  diagnostics.out = FALSE
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ calculateMetricsByCU(
 \item{out.label}{label to use in the filenames for the output}
 
 \item{out.filepath}{folder for storing the output files}
+
+\item{diagnostics.out}{if TRUE, generate a csv file with intermediate results before applying CU-specific usability specifications.}
 
 \item{cu.cyclic.bm}{if the data set includes highly cyclic Fraser sockeye CUs, an extra input file is needed. This is a data frame with the following required variables: CU_ID, CU_Name,Cycle,cyc,RelAbd_LBM,RelAbd_UBM. 'Cycle' is the base year (one of 1950-1953) and cyc is the corresponding cycle line index (1951=1,1952=2,1953=3,1950=4)}
 }

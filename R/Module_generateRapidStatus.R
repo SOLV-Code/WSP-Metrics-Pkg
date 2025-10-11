@@ -105,10 +105,6 @@ retro.summary.tbl <- retro.rapid.status$data %>%
 								select(-c("RelLBMCat", "RelUBMCat", "AbsLBMCat", "AbsUBMCat") %>% # obsolete. have RelAbdCat and AbsAbdCat now
 								dplyr::rename(GenAvgSpnForAbd = Value, ConfidenceRating = ConfidenceRating3))
 
-RelLBMCat	AbsLBMCat
-
-
-
 retro.summary.tbl$IntStatus5 <- retro.summary.tbl$IntStatusRaw
 retro.summary.tbl <- retro.summary.tbl %>% 
 						mutate(IntStatus3 = recode(IntStatusRaw, RedAmber = "Red", AmberGreen = "Amber")) %>% 
