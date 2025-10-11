@@ -435,7 +435,7 @@ png(filename=filename, width = 480*4.5, height = 480*4.8, units = "px", pointsiz
         #
 
 
-        var.list <- c("RelLBMCat","AbsLBMCat","LongTrendCat","PercChangeCat","RapidStatus","ConfidenceRating3","IntStatusRaw")
+        var.list <- c("RelAbdCat","AbsAbdCat","LongTrendCat","PercChangeCat","RapidStatus","ConfidenceRating","IntStatusRaw")
         var.labels <- c("RelAbd", "AbsAbd", "LongTrend","PercChange","RapidStatus", "ConfRating", "IntStatus")
 
         for(i in 1:7){
@@ -450,7 +450,7 @@ png(filename=filename, width = 480*4.5, height = 480*4.8, units = "px", pointsiz
           var.sub
 
 
-          if(var.list[i] != "ConfidenceRating3"){
+          if(var.list[i] != "ConfidenceRating"){
 
 
 
@@ -510,7 +510,7 @@ png(filename=filename, width = 480*4.5, height = 480*4.8, units = "px", pointsiz
           } # end if status, not confidence
 
 
-          if(var.list[i] == "ConfidenceRating3"){
+          if(var.list[i] == "ConfidenceRating"){
 
             high.df <- var.sub %>% dplyr::filter(Var == "High")
             high.df
