@@ -102,7 +102,7 @@ retro.summary.tbl <- retro.rapid.status$data %>%
                                                       by = "BinLabel") %>%
 							#  New output tweaks Oct 2025
                                 select(-NumStdMetrics) %>% # not needed anymore
-								select(-c("RelLBMCat", "RelUBMCat", "AbsLBMCat", "AbsUBMCat") %>% # obsolete. have RelAbdCat and AbsAbdCat now
+								select(-RelLBMCat,-RelUBMCat,-AbsLBMCat,-AbsUBMCat) %>% # obsolete. have RelAbdCat and AbsAbdCat now
 								dplyr::rename(GenAvgSpnForAbd = Value, ConfidenceRating = ConfidenceRating3))
 
 retro.summary.tbl$IntStatus5 <- retro.summary.tbl$IntStatusRaw
