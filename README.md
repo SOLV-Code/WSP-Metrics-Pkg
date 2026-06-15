@@ -24,6 +24,11 @@ If you use this package in your work, please cite it as follows:
 *Holt C, Pestal G, MacDonald B, and Grant S (2025) WSPMetrics: Calculate and use metrics for status assessments under Canada's Wild Salmon Policy (WSP). R package version 0.9. https://github.com/Pacific-salmon-assess/WSP-Metrics-Pkg.*
 
 
+## Acknowledgements
+
+This work was funded by Fisheries and Oceans Canada. Trend metric development was in collaboration with the Committee for the Status of Endangered Wildlife in Canada - Marine Fish Species Specialist Committee. 
+
+
 ## Background
 
 ### WSP Status Metrics
