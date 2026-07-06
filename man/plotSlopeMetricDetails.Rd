@@ -33,7 +33,7 @@ plotSlopeMetricDetails(
 \item{cu.label}{Short label to use for the CU. Default is to use CU_ID provided in argument cu.plot}
 }
 \description{
-this function creates a 3-panel diagnostic plot for the slope metric for 1 specified CU for 1 specified year
+this function creates a 3-panel diagnostic plot for the slope metric for 1 specified CU for 1 specified year, using outputs from the mectric calculation and status decision tree functions.
 }
 \keyword{details}
 \keyword{metric}

@@ -1,6 +1,6 @@
 #' plotSlopeMetricDetails
 #'
-#' this function creates a 3-panel diagnostic plot for the slope metric for 1 specified CU for 1 specified year
+#' this function creates a 3-panel diagnostic plot for the slope metric for 1 specified CU for 1 specified year, using outputs from the mectric calculation and status decision tree functions.
 #' @param cu.file a data frame with CU time series. This is the same data file used by calculateMetricsByCU(). See details there.
 #' @param metrics.results output from  calcMetrics()
 #' @param status.results output from generateRapidStatus()
