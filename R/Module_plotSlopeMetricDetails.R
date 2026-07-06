@@ -14,7 +14,7 @@
 
 
 
-plotSlopeMetricDetails <- function(cu.file, metrics.result, status.results,
+plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
                        cu.plot,year.plot, year.range = c(1960,2030),
 					   spn.label = "Wild Spawners",
                        cu.label = NULL){
