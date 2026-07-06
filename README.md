@@ -26,7 +26,7 @@ If you use this package in your work, please cite it as follows:
 
 ## Acknowledgements
 
-This work was funded by Fisheries and Oceans Canada. Trend metric development was in collaboration with the Committee for the Status of Endangered Wildlife in Canada - Marine Fish Species Specialist Committee. 
+This work was funded by Fisheries and Oceans Canada. Trend metric development was in collaboration with the Committee for the Status of Endangered Wildlife in Canada - Marine Fish Species Specialist Committee. The function [plotSlopeMetricDetails()](https://github.com/SOLV-Code/WSP-Metrics-Pkg/blob/master/R/Module_plotSlopeMetricDetails.R) was developed for a project with the [Tŝilhqot’in National Government - Fisheries Department](https://tsilhqotin.ca/our-territory/fisheries/) and contributed to this package.
 
 
 ## Background

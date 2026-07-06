@@ -11,6 +11,5 @@ LazyData: true
 Imports: tidyverse, R2jags, coda, rstanarm,rstan
 SystemRequirements: 
 Suggestions:
-VignetteBuilder: knitr
 URL: https://github.com/Pacific-salmon-assess/WSP-Metrics-Pkg
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
