@@ -1,6 +1,6 @@
 #' plotSlopeMetricDetails
 #'
-#' this function creates a 3-panel diagnostic plot for the slope metric for 1 specified CU for 1 specified year, using outputs from the mectric calculation and status decision tree functions. [This script](https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples/blob/main/CODE/1_Run_MetricsCalcs%26RapidStatus.R) in the [WSP-Rapid-Status-WorkedExamples Repo](https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples) illustrates the function and generates [these examples](https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples/tree/main/DATA/SlopeDiagnostics).
+#' this function creates a 3-panel diagnostic plot for the slope metric for 1 specified CU for 1 specified year, using outputs from the mectric calculation and status decision tree functions. The WSP-Rapid-Status-WorkedExamples Repo  includes an illustration: https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples/blob/main/CODE/1_Run_MetricsCalcs%26RapidStatus.R
 #' @param cu.file a data frame with CU time series. This is the same data file used by calculateMetricsByCU(). See details there.
 #' @param metrics.results output from  calcMetrics()
 #' @param status.results output from generateRapidStatus()
@@ -121,7 +121,7 @@ plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
 
 
 
-  # PANEL 3: SLOE METRIC PATTERN (PANEL 4 IN STATUS DASHBOARD)
+  # PANEL 3: SLOPE METRIC PATTERN (PANEL 4 IN STATUS DASHBOARD)
 
 
   ylim.use <- range(-55,50,status.summary.df$PercChange,na.rm=TRUE)
@@ -132,6 +132,13 @@ plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
   axis(1,cex.axis=1.4)
   axis(2,cex.axis=1.4,las=1)
   title(main = "Percent Change Metric", cex.main = 1.8,col.main="darkblue",line=1)
+
+
+alpha.use <- 0.5
+green.use <- rgb(184/255,225/255,134/255,alpha=alpha.use)
+red.use <- rgb(241/255,182/255,218/255,alpha=alpha.use)
+amber.use <- rgb(255/255,255/255,191/255,alpha=alpha.use)
+
 
   rect(par("usr")[1],specs.used$PercChange_LBM, par("usr")[2],specs.used$PercChange_UBM, col=amber.use,
        border = amber.use)
