@@ -158,11 +158,6 @@ amber.use <- rgb(255/255,255/255,191/255,alpha=alpha.use)
 
   lines(status.summary.df$Year,status.summary.df$PercChange,col="darkblue",pch=19, lwd=3, cex=1.3, type="o")
 
-  status.summary.df.sub <- status.summary.df %>% dplyr::filter(Year %in% spn.add.yrs)
-  points(status.summary.df.sub$Year,status.summary.df.sub$PercChange,
-         col="darkblue",pch=21, lwd=3, cex=1.4, bg="white")
-
-
   pt.idx <- status.summary.df$Year == year.plot
   points(status.summary.df$Year[pt.idx],status.summary.df$PercChange[pt.idx],
          col="red",pch=21, lwd=3, cex=1.9, bg="white")
