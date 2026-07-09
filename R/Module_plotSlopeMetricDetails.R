@@ -1,6 +1,6 @@
 #' plotSlopeMetricDetails
 #'
-#' this function creates a 3-panel diagnostic plot for the slope metric for 1 specified CU for 1 specified year, using outputs from the mectric calculation and status decision tree functions.
+#' this function creates a 3-panel diagnostic plot for the slope metric for 1 specified CU for 1 specified year, using outputs from the mectric calculation and status decision tree functions. [This script](https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples/blob/main/CODE/1_Run_MetricsCalcs%26RapidStatus.R) in the [WSP-Rapid-Status-WorkedExamples Repo](https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples) illustrates the function and generates [these examples](https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples/tree/main/DATA/SlopeDiagnostics).
 #' @param cu.file a data frame with CU time series. This is the same data file used by calculateMetricsByCU(). See details there.
 #' @param metrics.results output from  calcMetrics()
 #' @param status.results output from generateRapidStatus()
@@ -58,7 +58,7 @@ plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
 
 
   plot(cu.abd$Year,cu.abd[,2]/axis.scale,col="darkblue",pch=19, lwd=3, bty="n",
-       xlim = main.yrs.plot, cex=1.3, ylim = ylim/axis.scale,
+       xlim = year.range, cex=1.3, ylim = ylim/axis.scale,
        xlab = "Year", ylab = y.label.use,type="o",axes = FALSE,cex.lab=1.4
   )
 
@@ -74,7 +74,7 @@ plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
   abline(v=year.plot,col="darkgrey",lwd=4)
 
 
-  axis(1,at = seq(main.yrs.plot[1],main.yrs.plot[2],by=5),  cex.axis=1.5)
+  axis(1,at = seq(year.range[1],year.range[2],by=5),  cex.axis=1.5)
   axis(2,las=1,  cex.axis=1.5)
 
 
