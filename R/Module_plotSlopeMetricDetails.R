@@ -2,7 +2,7 @@
 #'
 #' this function creates a 3-panel diagnostic plot for the slope metric for 1 specified CU for 1 specified year, using outputs from the mectric calculation and status decision tree functions. The WSP-Rapid-Status-WorkedExamples Repo  includes an illustration: https://github.com/SOLV-Code/WSP-Rapid-Status-WorkedExamples/blob/main/CODE/1_Run_MetricsCalcs%26RapidStatus.R
 #' @param cu.file a data frame with CU time series. This is the same data file used by calculateMetricsByCU(). See details there.
-#' @param metrics.results output from  calcMetrics()
+#' @param metrics.results output from  calculateMetricsByCU()
 #' @param status.results output from generateRapidStatus()
 #' @param cu.plot CU ID for the conservation unit to be plotted
 #' @param year.plot year for which to plot the slope diagnostics
@@ -94,23 +94,62 @@ plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
          col="red",pch=21, lwd=3, cex=1.9, bg="white")
 
 
-  # PANEL 2: LOG-smoothed series and resulting slope
-  # FIX SO IT RESPONDS TO SPECS
+  # PANEL 2: zoom in on data for time windowand resulting slope
+  # NOTE: responds to metric specs
+  # Arguments: TrendLog = T/F and TrendSmooth = T/F in spec file
+  # specs are include in the metrics.results object that is fed into this function
+
 
   slope.idx <- cu.abd$Year %in% slope.yrs
 
-  plot(cu.abd$Year[slope.idx],log(gm.out[slope.idx]),
+  slope.yrs <- cu.abd$Year[slope.idx]
+
+
+  # if using logged and smoothed series for trend
+  if(metrics.results$TrendLog & metrics.results$TrendSmooth) {
+    slope.vals <- log(gm.out[slope.idx])
+    ylim.use <- range(log(gm.out))
+    y.label <- "Log of Generation Average"
+    settings.title <- "Specs: Log transformed, Smoothed (slope on gen avg)"
+  }
+
+
+  # if using logged but not smoothed series for trend
+  if(metrics.results$TrendLog & !metrics.results$TrendSmooth) {
+    slope.vals <- log(cu.abd[slope.idx,2])
+    ylim.use <- range(log(cu.abd[,2]))
+    y.label <- "Log of Annual Estimates"
+    settings.title <- "Specs: Log transformed, Not Smoothed (use annual values)"
+  }
+
+
+  # if not using logged but using smoothed series for trend
+  if(!metrics.results$TrendLog & metrics.results$TrendSmooth) {
+    slope.vals <- gm.out[slope.idx]
+    ylim.use <- range(gm.out)
+    y.label <- "Generation Average"
+    settings.title <- "Specs: Not log transformed, smoothed (slope on gen avg)"
+  }
+
+
+  # if not using logged and not smoothed series for trend
+  if(!metrics.results$TrendLog & !metrics.results$TrendSmooth) {
+    slope.vals <- cu.abd[slope.idx,2]
+    ylim.use <- range(cu.abd[,2])
+    y.label <- "Annual Estimates"
+    settings.title <- "Specs: Not log transformed, not smoothed (use annual values)"
+  }
+
+  plot(slope.yrs,slope.vals,
        type="o",col="red",lwd=4,pch=15, bty="n",
-       xlim = range(slope.yrs), #+c(-1,1),
-       cex=1.3,
-       xlab = "Year", ylab = "Log of Generation Average",axes = FALSE,cex.lab=1.4
+       xlim = range(slope.yrs),
+       ylim = ylim.use, cex=1.3,
+       xlab = "Year", ylab = y.label,axes = FALSE,cex.lab=1.4
   )
   axis(1, at = slope.yrs)
   axis(2, las=1)
 
-
-  coeff.fitted <- calcPercChangeSimple(unlist(log(gm.out[slope.idx])))
-  coeff.fitted
+  coeff.fitted <- calcPercChangeSimple(unlist(slope.vals))
 
   segments(min(slope.yrs), coeff.fitted$intercept ,
            max(slope.yrs), coeff.fitted$intercept + sum(slope.idx) * coeff.fitted$slope,
@@ -118,7 +157,7 @@ plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
            lwd = 3, lty = 2)
 
   title(main ="Fitted 3 Generation Slope", cex.main = 1.8,col.main="darkblue",line=1)
-
+  title(main =settings.title, cex.main = 1.3,col.main="darkblue",line=0)
 
 
   # PANEL 3: SLOPE METRIC PATTERN (PANEL 4 IN STATUS DASHBOARD)
