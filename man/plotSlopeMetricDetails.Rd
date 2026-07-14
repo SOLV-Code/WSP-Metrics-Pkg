@@ -18,7 +18,7 @@ plotSlopeMetricDetails(
 \arguments{
 \item{cu.file}{a data frame with CU time series. This is the same data file used by calculateMetricsByCU(). See details there.}
 
-\item{metrics.results}{output from  calcMetrics()}
+\item{metrics.results}{output from  calculateMetricsByCU()}
 
 \item{status.results}{output from generateRapidStatus()}
 
