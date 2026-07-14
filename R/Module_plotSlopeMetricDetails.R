@@ -20,9 +20,6 @@ plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
                        cu.label = NULL){
 
 
-# FOR NOW: Plotting smoothed log series in panel 2
-# PROPER: Panel 2 should respond to settings for TREND_SMOOTH and TREND_LOG in spec file
-
   if(is.null(cu.label)){cu.label <- cu.plot}
 
   graphics::layout(mat=matrix(c(1,1,2,3),ncol=2,byrow=TRUE),heights = c(1,1))
