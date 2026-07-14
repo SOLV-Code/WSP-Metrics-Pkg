@@ -106,7 +106,7 @@ plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
 
 
   # if using logged and smoothed series for trend
-  if(metrics.results$TrendLog & metrics.results$TrendSmooth) {
+  if(metrics.results$Specs$TrendLog & metrics.results$Specs$TrendSmooth) {
     slope.vals <- log(gm.out[slope.idx])
     ylim.use <- range(log(gm.out))
     y.label <- "Log of Generation Average"
@@ -115,7 +115,7 @@ plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
 
 
   # if using logged but not smoothed series for trend
-  if(metrics.results$TrendLog & !metrics.results$TrendSmooth) {
+  if(metrics.results$Specs$TrendLog & !metrics.results$Specs$TrendSmooth) {
     slope.vals <- log(cu.abd[slope.idx,2])
     ylim.use <- range(log(cu.abd[,2]))
     y.label <- "Log of Annual Estimates"
@@ -124,7 +124,7 @@ plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
 
 
   # if not using logged but using smoothed series for trend
-  if(!metrics.results$TrendLog & metrics.results$TrendSmooth) {
+  if(!metrics.results$Specs$TrendLog & metrics.results$Specs$TrendSmooth) {
     slope.vals <- gm.out[slope.idx]
     ylim.use <- range(gm.out)
     y.label <- "Generation Average"
@@ -133,7 +133,7 @@ plotSlopeMetricDetails <- function(cu.file, metrics.results, status.results,
 
 
   # if not using logged and not smoothed series for trend
-  if(!metrics.results$TrendLog & !metrics.results$TrendSmooth) {
+  if(!metrics.results$Specs$TrendLog & !metrics.results$Specs$TrendSmooth) {
     slope.vals <- cu.abd[slope.idx,2]
     ylim.use <- range(cu.abd[,2])
     y.label <- "Annual Estimates"
